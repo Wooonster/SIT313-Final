@@ -1,0 +1,15 @@
+.calousel h3{
+    /* height: 30%; */
+    color: #fff;
+    text-align: center;
+    background: #364d79;
+    line-height: 320px;
+}
+
+.welcome {
+    font-size: 48px;
+    font-weight: bold;
+    text-align: center;
+    margin: 10px auto;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+}

@@ -1,0 +1,117 @@
+.top {
+    display: flex;
+    height: 120px;
+    background-color: blanchedalmond;
+}
+
+.top .icon {
+    margin: auto;
+}
+
+.top #icon {
+    width: 60px;
+    height: 60px;
+}
+
+.top .icon label {
+    font-size: 34px;
+    font-weight: bold;
+    margin: auto 20px;
+    vertical-align: middle;
+}
+
+.top .avatar {
+    margin: auto;
+    text-align: center;
+}
+
+.detail {
+    width: 80%;
+    margin-left: 10%;
+    margin-top: 120px;
+}
+
+.detail .profile {
+    display: flex;
+}
+
+.profile .set {
+    margin-left: 20px;
+}
+
+.set p {
+    font-size: 36px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.set Button {
+    width: 150px;
+    height: 45px;
+    font-size: 18px;
+    margin-right: 10px;
+}
+
+.detail .basic-info {
+    background-color: khaki;
+    height: 500px;
+    margin-top: 20px;
+}
+
+.basic-info p {
+    font-size: 28px;
+    font-weight: bolder;
+    padding-top: 20px;
+    padding-left: 25px;
+}
+
+.basic-info .labels {
+    font-size: 21px;
+    font-weight: 450;
+}
+
+.basic-info .inputs {
+    width: 65%;
+    height: 45px;
+    font-size: 20px;
+}
+
+.basic-info .names {
+    margin-left: 5%;
+    /* text-align: center; */
+    margin-top: 20px;
+}
+
+.basic-info .contact {
+    margin-left: 5%;
+    /* text-align: center; */
+    margin-top: 30px;
+}
+
+.basic-info .address {
+    margin-top: 20px;
+    margin-left: 20px;
+}
+
+.address .inputs {
+    height: 40px;
+    font-size: 18px;
+    width: 70%;
+    margin-left: 90px;
+    margin-top: 20px;
+}
+
+.edit .btn {
+    margin-top: 35px;
+    font-size: 20px;
+    height: 40px;
+    float: right;
+    margin-right: 20px;
+}
+
+.detail .social {
+    background-color: blanchedalmond;
+    height: 400px;
+    margin-top: 20px;
+}
+

@@ -1,0 +1,66 @@
+.head {
+    text-align: center;   
+}
+
+.menu {
+    display: flex;
+    /* border: 2px solid skyblue; */
+    /* width: 80%; */
+    margin: 0 auto;
+}
+
+.menu .logo img {
+    width: 70px;
+    height: 70px;
+}
+
+.menu .logo label{
+    margin-left: 20px;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.wrapper {
+    position: relative;
+}
+
+.wrapper .icon {
+    height: 1.5rem;
+    width: 1.5rem;
+    padding: 4px;
+    position: absolute;
+    box-sizing: border-box;
+    top: 50%;
+    left: 2px;
+    transform: translateY(-50%);
+}
+
+.wrapper .input {
+    box-sizing: border-box;
+    padding-left: 1.5rem;
+    height: 25px;
+    width: 260px;
+    outline: none;
+}
+
+.menu div {
+    margin: 0 auto;
+}
+
+.menu .col {
+    display: flex;
+}
+
+
+.col .search {
+    /* height: 70px; */
+    margin: auto;
+}
+
+.menu .link {
+    text-decoration: none;
+    margin: auto;
+    font-size: 24px;
+    font-weight: bold;
+    color: darkcyan;
+}
