@@ -2,17 +2,25 @@ import Head from './Head'
 import { Carousel } from 'antd';
 import './css/Homepage.css'
 import React, { useState } from 'react';
-// import { useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import "antd/dist/antd.min.css";
 
 function Homepage() {
-    // const location = useLocation()
-    // console.log("homepage email: ", location.state.userEmail)
+    const location = useLocation()
+    let authedEmail = ''
+    // console.log("homepage email: ", )
+    try {
+        if(location.state.userEmail !== null) {
+            authedEmail = location.state.userEmail
+        }
+    } catch (error) {
+        authedEmail = null
+    }
 
     return (
         <div className="homepage">
-            {/* <Head authed={location.state.userEmail} /> */}
-            <Head />
+            <Head authed={authedEmail} />
+            {/* <Head /> */}
             <Carousel autoplay>
                 <div className="calousel">
                     <h3 >1</h3>

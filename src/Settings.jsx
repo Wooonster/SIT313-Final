@@ -1,48 +1,29 @@
 import React, { useState } from "react";
 import { AiOutlineHome } from "react-icons/ai"
-import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
-import { Avatar, Row, Col, Button, Input, Modal, message, Upload } from "antd";
-import avatar from './images/jerry.jpg'
+import { Avatar, Row, Col, Button, Input, Modal } from "antd";
+import { UploadOutlined } from '@ant-design/icons';
+// import avatar from './images/jerry.jpg'
 import './css/Settings.css'
-import { addAvatarUrl2UserDb, getUserNameByUserEmail, saveUserInfo, updateDisplayName } from "./utils/firebase";
+import { addAvatarUrl2UserDb, getAvatarFromStorage, getUserNameByUserEmail, saveUserInfo, updateDisplayName } from "./utils/firebase";
 import { useLocation, useNavigate } from "react-router-dom";
 import "antd/dist/antd.min.css";
 
-// upload avatar
-const getBase64 = (img, callback) => {
-    const reader = new FileReader();
-    reader.addEventListener('load', () => callback(reader.result));
-    reader.readAsDataURL(img);
-};
-
-// 检查是否是jpg/png 检查是否小于2mb
-const beforeUpload = (file) => {
-    const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
-
-    if (!isJpgOrPng) {
-        message.error('You can only upload JPG/PNG file!');
-    }
-
-    const isLt2M = file.size / 1024 / 1024 < 2;
-
-    if (!isLt2M) {
-        message.error('Image must smaller than 2MB!');
-    }
-
-    return isJpgOrPng && isLt2M;
-};
-
-
 function Settings() {
-    // get user email from Login
     const location = useLocation()
-    console.log('location.state.userEmail', location.state.userEmail)
-    const username = getUserNameByUserEmail(location.state.userEmail)
-    username.then((result) => {
-        console.log(result)
-        document.getElementById('username').innerHTML = result
-        document.getElementById('username2').innerHTML = result
-    }).catch(error => console.log(error))
+    let authedUserName = ''
+    try {
+        // get user email from Login
+        // console.log('location.state.userEmail', location.state.userEmail)
+        const username = getUserNameByUserEmail(location.state.userEmail)
+        username.then((result) => {
+            authedUserName = result
+            console.log("username got from firebase", authedUserName)
+            document.getElementById('username').innerHTML = result
+            document.getElementById('username2').innerHTML = result
+        }).catch(error => console.log(error))
+    } catch (error) {
+
+    }
 
     // initialize new user info
     const [info, setInfo] = useState({
@@ -55,7 +36,7 @@ function Settings() {
         postcode: ''
     })
     const { firstName, familyName, phone, addressLine1, addressLine2, addressLine3, postcode } = info
-    console.log('info: ', info)
+    console.log('user info setted: ', info)
 
     // set new user info
     const handleChange = (event) => {
@@ -114,60 +95,37 @@ function Settings() {
     }
 
     // Modal hook
-    const [modal1Open, setModal1Open] = useState(false);
-    const [modal2Open, setModal2Open] = useState(false);
-
-    // Upload new avatar
-    const [loading, setLoading] = useState(false);
-    const [imageUrl, setImageUrl] = useState();
-
-    const handleAvatarChange = (info) => {
-        if (info.file.status === 'uploading') {
-            setLoading(true);
-            return;
-        }
-
-        if (info.file.status === 'done') {
-            // Get this url from response in real world.
-            getBase64(info.file.originFileObj, (url) => {
-                setLoading(false);
-                setImageUrl(url);
-            });
-        }
-    };
-
-    const uploadAvatar2fb = async () => {
-        console.log('new avatar url: ', imageUrl)
-        try {
-            await addAvatarUrl2UserDb(location.state.userEmail, imageUrl)
-        } catch (error) {
-            console.log(error.message)
-        }
-    }
-
-    const uploadButton = (
-        <div>
-            {loading ? <LoadingOutlined /> : <PlusOutlined />}
-            <div
-                style={{
-                    marginTop: 8,
-                }}
-            >
-                Upload
-            </div>
-        </div>
-    );
+    const [modalOpen, setModalOpen] = useState(false);
+    const [avatarModalOpen, setAvatarModalOpen] = useState(false);
 
     // change name
     const [newUsername, setNewUsername] = useState('')
     const changeUsername = async () => {
-        console.log("new username: ", newUsername)
         try {
             await updateDisplayName(location.state.userEmail, newUsername)
         } catch (error) {
             console.log("change username failed:", error.message)
         }
     }
+
+    const [imageInfo, setImageInfo] = useState();
+    let avatarUrl = ''
+    let defaultAvatar = ''
+    const uploadAvatar2Fb = async () => {
+        console.log("image got: ", location.state.userEmail, imageInfo)
+        try {
+            avatarUrl = addAvatarUrl2UserDb(location.state.userEmail, imageInfo)
+            console.log('new avatar', avatarUrl)
+            // document.getElementById('').setAttribute('src', avatarUrl)
+        } catch (error) {
+            console.log("upload error")
+        }
+    }
+    
+    getAvatarFromStorage(location.state.userEmail).then((url) => {
+        defaultAvatar = url
+        // console.log("defaultAvatar", defaultAvatar)
+    })
 
     // navigation
     const navigate = useNavigate()
@@ -188,59 +146,59 @@ function Settings() {
                 </Col>
                 <Col span={10}></Col>
                 <Col span={4} className='avatar'>
-                    <Avatar size={100} src={avatar} />
+                    <Avatar size={100} id="topAvatar" src={defaultAvatar} />
+                    {/* <img src={defaultAvatar}  /> */}
                 </Col>
             </Row>
 
             <div className="detail">
                 <div className="profile">
-                    <Avatar shape="square" size={120} src={avatar} />
+                    <Avatar shape="square" id="largeAvatar" size={120} src={defaultAvatar} />
+                    {/* <img src={defaultAvatar} /> */}
                     <div className="set">
                         <p id="username2">xxx</p>
                         {/* change avatar */}
-                        <Button type="primary" onClick={() => setModal1Open(true)}>Change Avatar</Button>
+                        <Button type="primary" style={{ width: '180px' }} onClick={() => setAvatarModalOpen(true)}>Change Aavatar</Button>
                         <Modal
-                            title="Upload your new avatar here"
+                            title="Change Aavatar"
                             centered
-                            open={modal1Open}
-                            onOk={() => setModal1Open(false)}
-                            onCancel={() => setModal1Open(false)} >
-                            <p>Click below to upload...</p>
-                            <Upload
-                                name="avatar"
-                                listType="picture-card"
-                                className="avatar-uploader"
-                                showUploadList={false}
-                                // 上传的地址
-                                action='./images/'
-                                // 检查是否为jpg/png 检查是否小于2mb
-                                beforeUpload={beforeUpload}
-                                // set new upload url
-                                onChange={handleAvatarChange} >
-                                {imageUrl ? (
-                                    <img
-                                        src={imageUrl}
-                                        alt="avatar"
-                                        style={{
-                                            width: '100%',
-                                        }}
-                                    />
-                                ) : (
-                                    uploadButton
-                                )}
-                            </Upload>
+                            open={avatarModalOpen}
+                            onOk={() => {
+                                uploadAvatar2Fb()
+                                setAvatarModalOpen(false)
+                            }}
+                            onCancel={() => setAvatarModalOpen(false)} >
+                            <Button
+                                type="primary"
+                                onClick={() => {
+                                    document.getElementById('broswer').click()
+                                }} icon={<UploadOutlined />}>Change Avatar</Button>
+                            <input
+                                type="file"
+                                id="broswer"
+                                // className=".hide_file"
+                                // placeholder="Choose Files"
+                                onChange={
+                                    (event) => {
+                                        // setImageUpload(event.target.files[0]);
+                                        // console.log('event.target.files: ', event.target.files)
+                                        setImageInfo(event.target.files[0])
+                                    }}
+                                hidden
+                            />
                         </Modal>
+
                         {/* change name */}
-                        <Button type="primary" onClick={() => setModal2Open(true)}>Change Name</Button>
+                        <Button type="primary" onClick={() => setModalOpen(true)}>Change Name</Button>
                         <Modal
                             title="Change Username"
                             centered
-                            open={modal2Open}
+                            open={modalOpen}
                             onOk={() => {
-                                setModal2Open(false)
+                                setModalOpen(false)
                                 changeUsername()
                             }}
-                            onCancel={() => setModal2Open(false)} >
+                            onCancel={() => setModalOpen(false)} >
                             <p>Set your new username below...</p>
                             <input placeholder="set your new name" type='text' onChange={(e) => setNewUsername(e.target.value)} value={newUsername} style={{
                                 width: '80%',

@@ -5,6 +5,7 @@ import Login from "./Login";
 import Signup from './Signup'
 import Homepage from './Homepage';
 import Settings from './Settings';
+import Post from './Post'
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
         <Route path='/login' element={<Login />} />
         <Route path='/signup' element={<Signup />} />
         <Route path='/settings' element={<Settings />} />
+        <Route path='/post' element={<Post />} />
       </Routes>
     </div>
   );

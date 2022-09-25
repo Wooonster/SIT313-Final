@@ -3,8 +3,8 @@ import { initializeApp } from "firebase/app";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
-import { getFirestore, doc, getDoc, setDoc, addDoc, updateDoc } from 'firebase/firestore'
-
+import { getFirestore, doc, getDoc, setDoc, updateDoc } from 'firebase/firestore'
+import { ref, getStorage, uploadBytes, getDownloadURL } from 'firebase/storage'
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -20,8 +20,9 @@ const firebaseConfig = {
 const fbApp = initializeApp(firebaseConfig);
 
 export const auth = getAuth()
-
 export const db = getFirestore(fbApp)
+export const storage = getStorage(fbApp)
+
 // setup Database Document
 export const createUserDocFromAuth = async (userAuth, additionalInfomation = {}) => {
   if (!userAuth.email) return
@@ -87,7 +88,7 @@ export const signInAuthUserWithEmailAndPassword = async (email, password) => {
 export const getUserNameByUserEmail = async (email) => {
   const userDocRef = doc(db, 'users', email)
   const docSnap = await getDoc(userDocRef)
-  if(docSnap.exists()) {
+  if (docSnap.exists()) {
     console.log("username by email: ", docSnap.data())
     return docSnap.data().additionalInfomation.displayName
   } else {
@@ -97,14 +98,29 @@ export const getUserNameByUserEmail = async (email) => {
 
 // save avart to users
 export const addAvatarUrl2UserDb = async (email, url) => {
-  const userDocRef = doc(db, 'users', email)
+  let avatarUrl = ''
+  const avatarRef = ref(storage, `images/avatars/${email}-avatar`)
   try {
-    await setDoc(userDocRef, {
-      avatar: url
+    await uploadBytes(avatarRef, url).then((snapshot) => {
+      getDownloadURL(snapshot.ref).then((url) => {
+        avatarUrl = url
+      })
     })
+    console.log("succeed")
   } catch (error) {
-    console.log("avatar url upload error:", error.message)
+    console.log("upload avatar failed", error.message)
   }
+  return avatarUrl
+}
+
+// download avatar from Storage
+export const getAvatarFromStorage = async (email) => {
+  let avatarUrl = ''
+  const avatarRef = ref(storage, `images/avatars/${email}-avatar`)
+  await getDownloadURL(avatarRef).then((url) => {
+    avatarUrl = url
+  })
+  return avatarUrl
 }
 
 // update username(displayname) in users
