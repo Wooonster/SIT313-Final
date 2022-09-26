@@ -3,7 +3,7 @@ import { initializeApp } from "firebase/app";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
-import { getFirestore, doc, getDoc, setDoc, updateDoc } from 'firebase/firestore'
+import { getFirestore, doc, getDoc, getDocs, setDoc, updateDoc, collection } from 'firebase/firestore'
 import { ref, getStorage, uploadBytes, getDownloadURL } from 'firebase/storage'
 
 // Your web app's Firebase configuration
@@ -99,7 +99,7 @@ export const getUserNameByUserEmail = async (email) => {
 // save avart to users
 export const addAvatarUrl2UserDb = async (email, url) => {
   let avatarUrl = ''
-  const avatarRef = ref(storage, `images/avatars/${email}-avatar`)
+  const avatarRef = ref(storage, `images/${email}/avatars/${email}-avatar`)
   try {
     await uploadBytes(avatarRef, url).then((snapshot) => {
       getDownloadURL(snapshot.ref).then((url) => {
@@ -116,7 +116,7 @@ export const addAvatarUrl2UserDb = async (email, url) => {
 // download avatar from Storage
 export const getAvatarFromStorage = async (email) => {
   let avatarUrl = ''
-  const avatarRef = ref(storage, `images/avatars/${email}-avatar`)
+  const avatarRef = ref(storage, `images/${email}/avatars/${email}-avatar`)
   await getDownloadURL(avatarRef).then((url) => {
     avatarUrl = url
   })
@@ -134,4 +134,62 @@ export const updateDisplayName = async (email, name) => {
   } catch (error) {
     console.log("update username error: ", error.message)
   }
+}
+
+// save article
+export const saveArticle2Fb = async (email, title, abstract, content, tags, addedPicture) => {
+  const createTime = new Date().toISOString()
+  const articleDocRef = doc(db, 'articles', createTime)
+  try {
+    await setDoc(articleDocRef, {
+      email,
+      title,
+      abstract,
+      content,
+      tags
+    })
+
+    for (var i = 0; i < addedPicture.length; i++) {
+      const pictureRef = ref(storage, `images/${email}/article/${title}-${i}`)
+      await uploadBytes(pictureRef, addedPicture[i])
+    }
+  } catch (error) {
+    console.log("save article error: ", error.message)
+  }
+}
+
+// save question
+export const saveQuestion2Fb = async (email, title, content, tags, addedPicture) => {
+  const createTime = new Date().toISOString()
+  const questionDocRef = doc(db, 'questions', createTime)
+
+  try {
+    await setDoc(questionDocRef, {
+      email,
+      createTime,
+      title,
+      content,
+      tags
+    })
+
+    for (var i = 0; i < addedPicture.length; i++) {
+      const pictureRef = ref(storage, `images/${email}/question/${title}-${i}`)
+      await uploadBytes(pictureRef, addedPicture[i])
+    }
+  } catch (error) {
+    console.log("save question error: ", error.message)
+  }
+  // console.log("addedPicture", addedPicture)
+}
+
+// read questions
+export const readAllQuestions = async () => {
+  const querySnapshot = await getDocs(collection(db, 'questions'))
+  const allQuestion = []
+  querySnapshot.forEach((doc) => {
+    console.log(doc.id, " => ", doc.data())
+    allQuestion.push(doc.data())
+  })
+  // console.log("all questions: ", al  lQuestion)
+  return allQuestion
 }

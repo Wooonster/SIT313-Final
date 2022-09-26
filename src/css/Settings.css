@@ -37,6 +37,7 @@
 
 .profile .set {
     margin-left: 20px;
+    /* display: flex; */
 }
 
 .set p {
@@ -114,4 +115,3 @@
     height: 400px;
     margin-top: 20px;
 }
-

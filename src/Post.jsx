@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Form, Radio } from 'antd'
-// import Type from './Type';
+import Type from './Type';
 import "antd/dist/antd.min.css";
 import { useLocation } from 'react-router-dom';
 
@@ -11,15 +11,16 @@ function Post() {
     }
 
     const location = useLocation('fromHome')
-    console.log("post location", location.state)
+    // console.log("post location", location.state)
+    const userEmail = location.state
 
     return (
-        <div>
-            <div className="head">
+        <div className='post' style={{ width: "80%", marginLeft: "10%" }}>
+            <div className="posthead">
                 <p>New Post</p>
             </div>
 
-            <Form >
+            <Form>
                 <Form.Item label="Select Post Type:">
                     <Radio.Group defaultValue='question'>
                         <Radio value="question" defaultChecked onClick={handleClick} autoFocus> Question </Radio>
@@ -28,7 +29,7 @@ function Post() {
                 </Form.Item>
             </Form>
 
-            {/* <Type typeName={value} /> */}
+            <Type typeName={value} email={userEmail} />
         </div>
     )
 }
