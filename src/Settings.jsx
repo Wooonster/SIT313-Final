@@ -1,20 +1,30 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { AiOutlineHome } from "react-icons/ai"
-import { Avatar, Row, Col, Button, Input, Modal } from "antd";
+import { Avatar, Row, Col, Button, Input, Modal, Popover } from "antd";
 import { UploadOutlined } from '@ant-design/icons';
-// import avatar from './images/jerry.jpg'
+import avatar from './images/jerry.jpg'
 import './css/Settings.css'
-import { addAvatarUrl2UserDb, getAvatarFromStorage, getUserNameByUserEmail, saveUserInfo, updateDisplayName } from "./utils/firebase";
+import { addAvatarUrl2UserDb, getAvatarFromStorage, getUserNameByUserEmail, saveUserInfo, updateDisplayName, auth, readUserInfoByEmail } from "./utils/firebase";
 import { useLocation, useNavigate } from "react-router-dom";
 import "antd/dist/antd.min.css";
 
 function Settings() {
-    const location = useLocation()
+    // get current user
+    const user = auth.currentUser
+    let currentUserEmail = ''
+    // let currentUserDisplayName = ''
+    if(user !== null) {
+        console.log('current user', user)
+        currentUserEmail = user.email
+        // currentUserDisplayName = user.
+    }
+
+
     let authedUserName = ''
     try {
         // get user email from Login
         // console.log('location.state.userEmail', location.state.userEmail)
-        const username = getUserNameByUserEmail(location.state.userEmail)
+        const username = getUserNameByUserEmail(currentUserEmail)
         username.then((result) => {
             authedUserName = result
             console.log("username got from firebase", authedUserName)
@@ -24,6 +34,46 @@ function Settings() {
     } catch (error) {
 
     }
+
+    // read all userinfo
+    const getUserInfo = async () => {
+        return readUserInfoByEmail(currentUserEmail).then(res => {
+            return res
+        })
+    }
+
+    const [defaultInfo, setDefaultInfo] = useState({
+        firstName: '',
+        familyName: '',
+        phone: '',
+        addressLine1: '',
+        addressLine2: '',
+        addressLine3: '',
+        postcode: ''
+    })
+    useEffect(() => {
+        const loadUserInfo = async () => {
+            try {
+                const i = await getUserInfo()
+                // console.log('i', i)
+                setDefaultInfo({
+                    firstName: i.firstName,
+                    familyName: i.familyName,
+                    phone: i.phone,
+                    addressLine1: i.address.addressLine1,
+                    addressLine2: i.address.addressLine2,
+                    addressLine3: i.address.addressLine3,
+                    postcode: i.postcode
+                })
+            } catch (error) {
+                console.log('read user info erro', error.message)
+            }
+        }
+
+        loadUserInfo()
+    }, [])
+
+
 
     // initialize new user info
     const [info, setInfo] = useState({
@@ -56,6 +106,7 @@ function Settings() {
         document.getElementById('save-btn').style.display = 'inline-block'
         const inputs = document.getElementsByClassName('inputs')
         for (var i = 0; i < inputs.length; i++) {
+            if (i === 2) continue
             inputs[i].disabled = false
             inputs[i].style.color = '#000'
             inputs[i].style.borderBottom = '4px solid #6dabe4'
@@ -68,25 +119,38 @@ function Settings() {
         document.getElementById('save-btn').style.display = 'none'
         const inputs = document.getElementsByClassName('inputs')
         for (var i = 0; i < inputs.length; i++) {
+            if (i === 2) continue
             inputs[i].disabled = true
             inputs[i].style.color = 'grey'
             inputs[i].style.backgroundColor = '#fff'
             inputs[i].style.borderBottom = 'none'
+            // inputs[i].value = ''
         }
+        setInfo({
+            firstName: '',
+            familyName: '',
+            phone: '',
+            addressLine1: '',
+            addressLine2: '',
+            addressLine3: '',
+            postcode: ''
+        })
     }
 
     // upload new user info to firebase
     const handleSubmit = async (event) => {
         event.preventDefault()
         try {
-            await saveUserInfo(firstName, familyName, phone, postcode, { addressLine1, addressLine2, addressLine3 })
+            await saveUserInfo(currentUserEmail, firstName, familyName, phone, postcode, { addressLine1, addressLine2, addressLine3 })
         } catch (error) {
             console.log("create user info error:", error.message)
         }
         document.getElementById('save-btn').style.display = 'none'
+        document.getElementById('cancel-btn').style.display = 'none'
         document.getElementById('edit-btn').style.display = 'inline-block'
         const inputs = document.getElementsByClassName('inputs')
         for (var i = 0; i < inputs.length; i++) {
+            if (i === 2) continue
             inputs[i].disabled = true
             inputs[i].style.color = 'grey'
             inputs[i].style.backgroundColor = '#fff'
@@ -102,33 +166,48 @@ function Settings() {
     const [newUsername, setNewUsername] = useState('')
     const changeUsername = async () => {
         try {
-            await updateDisplayName(location.state.userEmail, newUsername)
+            await updateDisplayName(currentUserEmail, newUsername)
         } catch (error) {
             console.log("change username failed:", error.message)
         }
     }
 
-    const [imageInfo, setImageInfo] = useState();
-    let avatarUrl = ''
-    let defaultAvatar = ''
-    const uploadAvatar2Fb = async () => {
-        console.log("image got: ", location.state.userEmail, imageInfo)
-        try {
-            avatarUrl = addAvatarUrl2UserDb(location.state.userEmail, imageInfo)
-            console.log('new avatar', avatarUrl)
-            // document.getElementById('').setAttribute('src', avatarUrl)
-        } catch (error) {
-            console.log("upload error")
-        }
-    }
-    
-    getAvatarFromStorage(location.state.userEmail).then((url) => {
-        defaultAvatar = url
-        // console.log("defaultAvatar", defaultAvatar)
-    })
+    // const [imageInfo, setImageInfo] = useState();
+    // let avatarUrl = ''
+    // let defaultAvatar = ''
+    // const uploadAvatar2Fb = async () => {
+    //     console.log("image got: ", loggedUserEmail, imageInfo)
+    //     try {
+    //         avatarUrl = addAvatarUrl2UserDb(loggedUserEmail, imageInfo)
+    //         console.log('new avatar', avatarUrl)
+    //         // document.getElementById('').setAttribute('src', avatarUrl)
+    //     } catch (error) {
+    //         console.log("upload error")
+    //     }
+    // }
+
+    // getAvatarFromStorage(loggedUserEmail).then((url) => {
+    //     defaultAvatar = url
+    //     // console.log("defaultAvatar", defaultAvatar)
+    // })
 
     // navigation
     const navigate = useNavigate()
+
+    // const text = <span>Title</span>;
+    const content = (
+        <div>
+            {/* <p>Content</p> */}
+            {/* <p>Content</p> */}
+            <Button type='primary' onClick={() => {
+                auth.signOut().then(() => {
+                    navigate('/login')
+                }).catch((error) => {
+                    console.log('sign out failed', error.message)
+                })
+            }}>Sign out here</Button>
+        </div>
+    )
 
     return (
         <div className="settings">
@@ -136,30 +215,35 @@ function Settings() {
                 <Col span={10} className="icon">
                     <AiOutlineHome id="icon" onClick={() => navigate('/', {
                         state: {
-                            userEmail: location.state.userEmail
+                            userEmail: currentUserEmail,
+                            username: authedUserName
                         }
                     })} style={{
+                        color: '#6dabe4',
                         verticalAlign: 'middle',
                     }}
                     />
                     <label>Hello, <span id='username'>xxx</span></label>
                 </Col>
-                <Col span={10}></Col>
-                <Col span={4} className='avatar'>
-                    <Avatar size={100} id="topAvatar" src={defaultAvatar} />
+                <Col span={12}></Col>
+                <Col span={2} className='avatar'>
+                    <Popover placement="bottom" content={content} trigger="click">
+                        <Avatar size={80} id="topAvatar" src={avatar} />
+                    </Popover>
+
                     {/* <img src={defaultAvatar}  /> */}
                 </Col>
             </Row>
 
             <div className="detail">
                 <div className="profile">
-                    <Avatar shape="square" id="largeAvatar" size={120} src={defaultAvatar} />
+                    {/* <Avatar shape="square" id="largeAvatar" size={120} src={defaultAvatar} /> */}
                     {/* <img src={defaultAvatar} /> */}
                     <div className="set">
                         <p id="username2">xxx</p>
                         {/* change avatar */}
                         <Button type="primary" style={{ width: '180px' }} onClick={() => setAvatarModalOpen(true)}>Change Aavatar</Button>
-                        <Modal
+                        {/* <Modal
                             title="Change Aavatar"
                             centered
                             open={avatarModalOpen}
@@ -186,7 +270,7 @@ function Settings() {
                                     }}
                                 hidden
                             />
-                        </Modal>
+                        </Modal> */}
 
                         {/* change name */}
                         <Button type="primary" onClick={() => setModalOpen(true)}>Change Name</Button>
@@ -218,34 +302,34 @@ function Settings() {
                     <Row className="names">
                         <Col span={12}>
                             <label className="labels">First Name:</label>
-                            <Input onChange={handleChange} value={info.firstName} name='firstName' disabled type='text' placeholder="Fangzhou" className="inputs" style={{ marginLeft: '10px' }} />
+                            <Input onChange={handleChange} value={info.firstName} name='firstName' disabled type='text' placeholder={defaultInfo.firstName} className="inputs" style={{ marginLeft: '10px' }} />
                         </Col>
                         <Col span={12}>
                             <label className="labels">Family Name:</label>
-                            <Input onChange={handleChange} value={info.familyName} name='familyName' disabled type='text' placeholder="Wang" className="inputs" style={{ marginLeft: '10px' }} />
+                            <Input onChange={handleChange} value={info.familyName} name='familyName' disabled type='text' placeholder={defaultInfo.familyName} className="inputs" style={{ marginLeft: '10px' }} />
                         </Col>
                     </Row>
                     <Row className="contact">
                         <Col span={12}>
                             <label className="labels">Email:</label>
-                            <Input disabled type='text' placeholder="s222187008@deakin.edu.au" className="inputs" style={{ marginLeft: '10px' }} />
+                            <Input disabled type='text' placeholder={currentUserEmail} className="inputs" style={{ marginLeft: '10px' }} />
                         </Col>
                         <Col span={12}>
                             <label className="labels">Phone Number:</label>
-                            <Input onChange={handleChange} value={info.phone} name='phone' disabled type='text' placeholder="0493521881" className="inputs" style={{ marginLeft: '10px' }} />
+                            <Input onChange={handleChange} value={info.phone} name='phone' disabled type='text' placeholder={defaultInfo.phone} className="inputs" style={{ marginLeft: '10px' }} />
                         </Col>
                     </Row>
                     <Row className="address">
                         <Col span={24}>
                             <label className="labels">Address:</label>
-                            <Input onChange={handleChange} value={info.addressLine1} name='addressLine1' disabled placeholder="221 Burwood Hwy" type='text' className="inputs" style={{ marginLeft: '10px' }} />
+                            <Input onChange={handleChange} value={info.addressLine1} name='addressLine1' disabled type='text' placeholder={defaultInfo.addressLine1} className="inputs" style={{ marginLeft: '10px' }} />
                         </Col>
                         <Col span={24}>
-                            <Input onChange={handleChange} value={info.addressLine2} name='addressLine2' disabled placeholder="Burwood" id="adds" type='text' className="inputs" />
+                            <Input onChange={handleChange} value={info.addressLine2} name='addressLine2' disabled placeholder={defaultInfo.addressLine2} id="adds" type='text' className="inputs" />
                         </Col>
                         <Col span={24}>
-                            <Input onChange={handleChange} value={info.addressLine3} name='addressLine3' disabled placeholder="VIC" id="adds" type='text' className="inputs" />
-                            <Input onChange={handleChange} value={info.postcode} name='postcode' disabled placeholder="3125" id="adds" type='text' className="inputs" style={{ width: '15%', marginLeft: '15px' }} />
+                            <Input onChange={handleChange} value={info.addressLine3} name='addressLine3' disabled placeholder={defaultInfo.addressLine3} id="adds" type='text' className="inputs" />
+                            <Input onChange={handleChange} value={info.postcode} name='postcode' disabled placeholder={defaultInfo.postcode} id="adds" type='text' className="inputs" style={{ width: '15%', marginLeft: '15px' }} />
                         </Col>
                     </Row>
                     <Row justify="end" className="edit">

@@ -6,6 +6,7 @@ import Signup from './Signup'
 import Homepage from './Homepage';
 import Settings from './Settings';
 import Post from './Post'
+import Forget from './Forget'
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         <Route path='/signup' element={<Signup />} />
         <Route path='/settings' element={<Settings />} />
         <Route path='/post' element={<Post />} />
+        <Route path='/forget' element={<Forget />} />
       </Routes>
     </div>
   );

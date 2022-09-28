@@ -10,9 +10,10 @@ function Post() {
         setValue(e.target.value)
     }
 
-    const location = useLocation('fromHome')
+    const location = useLocation()
     // console.log("post location", location.state)
-    const userEmail = location.state
+    const userEmail = location.state.email
+    const username = location.state.username
 
     return (
         <div className='post' style={{ width: "80%", marginLeft: "10%" }}>
@@ -29,7 +30,7 @@ function Post() {
                 </Form.Item>
             </Form>
 
-            <Type typeName={value} email={userEmail} />
+            <Type typeName={value} email={userEmail} username={username} />
         </div>
     )
 }

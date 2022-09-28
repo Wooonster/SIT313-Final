@@ -12,13 +12,18 @@ function Auth(props) {
     const {searchTerm, setSearchTerm} = useContext(SearchContext)
 
     let authedEmail = props.authed
-    console.log("authed: ", authedEmail)
+    let authedUserName = props.username
+    const postData = {
+        email: authedEmail,
+        username: authedUserName
+    }
+    // console.log("authed: ", authedEmail, ', ', authedUserName)
 
     const authedReturn = () => {
         if (authedEmail !== null) {
             return (
                 <Col span={4} className='col'>
-                    <p className="link" id="post"><Link to='/post' state={authedEmail}>POST</Link></p>
+                    <p className="link" id="post"><Link to='/post' state={postData}>POST</Link></p>
                     <p className="link" id="settings" ><Link to='/settings'>settings</Link></p>
                 </Col>
             )

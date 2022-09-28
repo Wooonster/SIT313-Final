@@ -13,3 +13,11 @@
     margin: 10px auto;
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 }
+
+.card {
+    border: 1px solid dodgerblue;
+    margin-left: 20%;
+    margin-bottom: 20px;
+    width: 60%;
+    height: 260px;
+}

@@ -3,6 +3,7 @@ import { Card, Button, Modal } from 'antd'
 import { CloseOutlined } from '@ant-design/icons';
 import Draggable from 'react-draggable';
 import "antd/dist/antd.min.css";
+// import { getUserNameByUserEmail } from './utils/firebase';
 
 function CardItem(props) {
     const handleClick = () => {
@@ -10,6 +11,10 @@ function CardItem(props) {
     }
 
     const [modalOpen, setModalOpen] = useState(false);
+    // const username = getUserNameByUserEmail(props.email)
+    // console.log('getUserNameByUserEmail(props.email)', getUserNameByUserEmail(props.email))
+
+    // console.log('card', props.username)
 
     return (
         <Draggable>
@@ -30,6 +35,7 @@ function CardItem(props) {
                         >
                             <h3>{props.discription}</h3>
                             <p>Post Time: <span style={{ color: "deepskyblue" }}>{props.date}</span></p>
+                            <p>From: <span style={{ color: "deepskyblue" }}>{props.username}</span></p>
                         </Modal>
                         <CloseOutlined style={{ marginTop: '8px' }} onClick={handleClick} />
                     </p>

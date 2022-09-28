@@ -2,7 +2,7 @@
 import { initializeApp } from "firebase/app";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, updatePassword } from "firebase/auth";
 import { getFirestore, doc, getDoc, getDocs, setDoc, updateDoc, collection } from 'firebase/firestore'
 import { ref, getStorage, uploadBytes, getDownloadURL } from 'firebase/storage'
 
@@ -54,21 +54,36 @@ export const createUserDocFromAuth = async (userAuth, additionalInfomation = {})
 }
 
 // save user info to database
-export const saveUserInfo = async (firstName, familyName, phone, postcode, address = {}) => {
+export const saveUserInfo = async (email, firstName, familyName, phone, postcode, address = {}) => {
   const createTime = new Date().toISOString()
-  const userInfoDocRef = doc(db, 'userInfo', createTime)
+  const userInfoDocRef = doc(db, 'userInfo', email)
   try {
     await setDoc(userInfoDocRef, {
       firstName,
       familyName,
       phone,
       address,
-      postcode
+      postcode,
+      createTime,
+      email
     })
   } catch (error) {
     console.log('create user info doc error', error.message)
   }
   console.log('userInfoDocRef.id', userInfoDocRef.id)
+}
+
+// read user info from fb
+export const readUserInfoByEmail = async (email) => {
+  const userInfoDocRef = doc(db, 'userInfo', email)
+  const docSnap = await getDoc(userInfoDocRef)
+
+  if(docSnap.exists()) {
+    // console.log('logged user info: ', docSnap.data())
+    return docSnap.data()
+  } else {
+    console.log('user info not found')
+  }
 }
 
 // signup with user Email
@@ -84,13 +99,40 @@ export const signInAuthUserWithEmailAndPassword = async (email, password) => {
 }
 
 
+// signup with Google
+const provider = new GoogleAuthProvider()
+provider.setCustomParameters({
+  prompt: 'select_account'
+})
+export const signInWithGoogle = () => signInWithPopup(auth, provider)
+export const saveGoogleUser = async (email, displayName, createTime) => {
+  const userDocRef = doc(db, 'users', email)
+  try {
+    await setDoc(userDocRef, {
+      email,
+      displayName,
+      createTime
+    })
+  } catch (error) {
+    console.log('create google user error', error.message)
+  }
+}
+
 // get user info by email
 export const getUserNameByUserEmail = async (email) => {
   const userDocRef = doc(db, 'users', email)
   const docSnap = await getDoc(userDocRef)
   if (docSnap.exists()) {
     console.log("username by email: ", docSnap.data())
-    return docSnap.data().additionalInfomation.displayName
+    // return docSnap.data().additionalInfomation.displayName
+    // if (docSnap.data().additionalInfomation.displayName === null) return docSnap.data().displayName
+    // else return docSnap.data().additionalInfomation.displayName
+    if (docSnap.data().displayName !== '') {
+      console.log("docSnap.data().displayName", docSnap.data().displayName)
+      return docSnap.data().displayName
+    } else {
+      return docSnap.data().additionalInfomation.displayName
+    }
   } else {
     console.log("failed")
   }
@@ -136,13 +178,33 @@ export const updateDisplayName = async (email, name) => {
   }
 }
 
+// update user password
+export const updateUserPassword = async (email, pwd) => {
+  // const userDocRef = doc(db, 'users', email)
+  // try {
+  //   await updateDoc(userDocRef, {
+  //     "additionalInfomation.password": pwd
+  //   })
+  // } catch (error) {
+  //   console.log("password upload failed")
+  // }
+  try {
+    // updatePassword(auth, email, pwd)
+    updatePassword(email, pwd)
+    // updatePassword()
+  } catch (error) {
+    console.log('change pwd error', error)
+  }
+}
+
 // save article
-export const saveArticle2Fb = async (email, title, abstract, content, tags, addedPicture) => {
+export const saveArticle2Fb = async (email, username, title, abstract, content, tags, addedPicture) => {
   const createTime = new Date().toISOString()
   const articleDocRef = doc(db, 'articles', createTime)
   try {
     await setDoc(articleDocRef, {
       email,
+      username,
       title,
       abstract,
       content,
@@ -159,13 +221,14 @@ export const saveArticle2Fb = async (email, title, abstract, content, tags, adde
 }
 
 // save question
-export const saveQuestion2Fb = async (email, title, content, tags, addedPicture) => {
+export const saveQuestion2Fb = async (email, username, title, content, tags, addedPicture) => {
   const createTime = new Date().toISOString()
   const questionDocRef = doc(db, 'questions', createTime)
 
   try {
     await setDoc(questionDocRef, {
       email,
+      username,
       createTime,
       title,
       content,
@@ -187,9 +250,10 @@ export const readAllQuestions = async () => {
   const querySnapshot = await getDocs(collection(db, 'questions'))
   const allQuestion = []
   querySnapshot.forEach((doc) => {
-    console.log(doc.id, " => ", doc.data())
+    // console.log(doc.id, " => ", doc.data())
     allQuestion.push(doc.data())
   })
-  // console.log("all questions: ", al  lQuestion)
+  // console.log("all questions: ", allQuestion)
   return allQuestion
+  // return querySnapshot
 }

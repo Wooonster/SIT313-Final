@@ -9,10 +9,11 @@ import { PictuerContext } from "./Context/uploadpicture.context";
 
 function Question(props) {
     const { currentTitle } = useContext(TitleContext)
-    console.log("currentTitle: ", currentTitle)
+    // console.log("currentTitle: ", currentTitle)
     const { newPicture } = useContext(PictuerContext)
     console.log("newPicture", newPicture)
     const userEmail = props.email
+    const username = props.name
     // console.log('user email:', userEmail)
 
     const [questionInfo, setQuestionInfo] = useState({
@@ -34,7 +35,7 @@ function Question(props) {
 
     const saveQuestion = async () => {
         try {
-            await saveQuestion2Fb(userEmail, currentTitle, content, tags, newPicture)
+            await saveQuestion2Fb(userEmail, username, currentTitle, content, tags, newPicture)
         } catch (error) {
             openNotificationWithIcon('error')
         }

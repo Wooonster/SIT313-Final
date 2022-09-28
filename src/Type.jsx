@@ -5,11 +5,11 @@ import Question from "./Question";
 function Type (props) {
     if(props.typeName === 'question') {
         return (
-            <Question email={props.email} />
+            <Question email={props.email} name={props.username} />
         )
     } else {
         return (
-            <Article email={props.email} />
+            <Article email={props.email} name={props.username} />
         )
     }
 }

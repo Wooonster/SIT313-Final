@@ -1,6 +1,6 @@
 .top {
     display: flex;
-    height: 120px;
+    height: 90px;
     background-color: blanchedalmond;
 }
 
@@ -9,14 +9,17 @@
 }
 
 .top #icon {
-    width: 60px;
-    height: 60px;
+    margin-left: 20px;
+    width: 45px;
+    height: 45px;
 }
 
 .top .icon label {
     font-size: 34px;
     font-weight: bold;
-    margin: auto 20px;
+    /* margin: auto 15px; */
+    margin-top: 10px;
+    margin-left: 5px;
     vertical-align: middle;
 }
 

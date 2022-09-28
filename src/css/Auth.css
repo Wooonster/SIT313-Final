@@ -9,6 +9,17 @@
     background-color: #fff;
 }
 
+.forget-container {
+    display: flex;
+    width: 50%;
+    max-width: 1200px;
+    margin: 0 auto;
+    margin-top: 12%;
+    border: 3px solid rgb(57, 118, 231);
+    box-shadow: 9px 6px 9px 1px #969696;
+    background-color: #fff;
+}
+
 .logoPart {
     margin: auto 0 auto 10%;
     width: 200px;
@@ -39,6 +50,18 @@
     text-align: center; 
     /* padding: 25px; */
     /* border: 3px solid rgb(57, 118, 231);  */
+}
+
+.forget-form {
+    width: 100%;
+    height: 300px;
+    margin-top: 100px;
+    margin-bottom: 100px;
+}
+
+.forget-form h2 {
+    text-align: center;
+    margin: 25px auto;
 }
 
 .auth-form h2 {

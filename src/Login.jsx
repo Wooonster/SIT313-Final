@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import './css/Auth.css'
-import { signInAuthUserWithEmailAndPassword } from "./utils/firebase";
+import { saveGoogleUser, signInAuthUserWithEmailAndPassword, signInWithGoogle } from "./utils/firebase";
 import deakinLogo from './images/deakin-logo.jpg'
 import "antd/dist/antd.min.css";
+import { Button } from "antd";
+import { GoogleOutlined } from "@ant-design/icons"
 
 function Login() {
     // const loginGoogleUser = async () => {
@@ -26,7 +28,7 @@ function Login() {
             }
         })
     }
-    
+
     const navigate = useNavigate()
     const handleSubmit = async (event) => {
         event.preventDefault()
@@ -39,8 +41,9 @@ function Login() {
             } else if (!password) {
                 document.getElementById('error').innerHTML = 'Please enter your password!'
             } else {
+                // await signInAuthUserWithEmailAndPassword(email, password)
                 const responce = await signInAuthUserWithEmailAndPassword(email, password)
-                console.log('username & password ', email, password)
+                // console.log('username & password ', email, password)
                 console.log('login responce: ', responce, email, password)
                 // window.location = 'http://localhost:3000/settings'
                 navigate('/settings', {
@@ -55,12 +58,33 @@ function Login() {
         }
     }
 
+    const googleLogin = () => {
+        const res = signInWithGoogle()
+        console.log('sign in with google: ', res)
+
+        res.then(data => {
+            try {
+                saveGoogleUser(data.user.email, data.user.displayName, data.user.metadata.creationTime)
+                console.log('google email', data.user.email)
+                navigate('/settings', {
+                    state: {
+                        userEmail: data.user.email
+                    }
+                })
+            } catch (error) {
+                console.log('error', error.message)
+            }
+        })
+
+    }
+
     return (
         <div className="container">
             <div className="logoPart">
                 <img className="picture" src={deakinLogo} alt='deakin-logo' />
                 <p>Welcome Joining<br /><br /><span>DEV@DEAKIN</span></p>
-                <Link to='/signup'>Click to Sign Up</Link>
+                <Link to='/signup'>Click to Sign Up</Link> <br />
+                <Link to='/forget'>Forget your password?</Link>
             </div>
             <div className="auth-form">
                 <h2>Login Here</h2>
@@ -77,8 +101,10 @@ function Login() {
                         <p className="error" id="error"></p>
                         <input type='submit' onClick={handleSubmit} name='login' id='login' value='Login' className="button" />
                     </div>
-
                 </form>
+                <div className="login-method">
+                    <Button icon={<GoogleOutlined />} onClick={googleLogin}>Login with Google</Button>
+                </div>
             </div>
         </div>
     )
