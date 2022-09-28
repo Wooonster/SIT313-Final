@@ -8,11 +8,6 @@ import { Button } from "antd";
 import { GoogleOutlined } from "@ant-design/icons"
 
 function Login() {
-    // const loginGoogleUser = async () => {
-    //     const { user } = await signInWithGooglePopup()
-    //     // console.log('sign in with google: ', res)
-    //     await createUserDocFromAuth(user)
-    // }
 
     const [contact, setContact] = useState({
         email: '',
@@ -41,10 +36,10 @@ function Login() {
             } else if (!password) {
                 document.getElementById('error').innerHTML = 'Please enter your password!'
             } else {
-                // await signInAuthUserWithEmailAndPassword(email, password)
-                const responce = await signInAuthUserWithEmailAndPassword(email, password)
+                await signInAuthUserWithEmailAndPassword(email, password)
+                // const responce = await signInAuthUserWithEmailAndPassword(email, password)
                 // console.log('username & password ', email, password)
-                console.log('login responce: ', responce, email, password)
+                // console.log('login responce: ', responce, email, password)
                 // window.location = 'http://localhost:3000/settings'
                 navigate('/settings', {
                     state: {

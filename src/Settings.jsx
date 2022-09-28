@@ -19,7 +19,6 @@ function Settings() {
         // currentUserDisplayName = user.
     }
 
-
     let authedUserName = ''
     try {
         // get user email from Login

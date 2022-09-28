@@ -27,17 +27,17 @@ export const storage = getStorage(fbApp)
 export const createUserDocFromAuth = async (userAuth, additionalInfomation = {}) => {
   if (!userAuth.email) return
   const userDocRef = doc(db, 'users', userAuth.email)
-  console.log('userDocRef: ', userDocRef)
+  // console.log('userDocRef: ', userDocRef)
 
   const userSnapshot = await getDoc(userDocRef)
-  console.log('userSnapShot: ', userSnapshot)
-  console.log('check exsistence', userSnapshot.exists())
+  // console.log('userSnapShot: ', userSnapshot)
+  // console.log('check exsistence', userSnapshot.exists())
 
   // save the doc
   if (!userSnapshot.exists()) {
-    const { displayName, email } = userAuth
+    let { displayName, email } = userAuth
     const createdAt = new Date()
-
+    displayName = additionalInfomation.displayName
     try {
       await setDoc(userDocRef, {
         displayName,
@@ -128,9 +128,10 @@ export const getUserNameByUserEmail = async (email) => {
     // if (docSnap.data().additionalInfomation.displayName === null) return docSnap.data().displayName
     // else return docSnap.data().additionalInfomation.displayName
     if (docSnap.data().displayName !== '') {
-      console.log("docSnap.data().displayName", docSnap.data().displayName)
+      // console.log("docSnap.data().displayName", docSnap.data().displayName)
       return docSnap.data().displayName
     } else {
+      console.log('docSnap.data().additionalInfomation.displayName', docSnap.data().additionalInfomation.displayName)
       return docSnap.data().additionalInfomation.displayName
     }
   } else {
