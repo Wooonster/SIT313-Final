@@ -5,14 +5,14 @@ import "antd/dist/antd.min.css";
 import { Button } from 'antd';
 import { updateUserPassword } from './utils/firebase';
 import { useNavigate } from "react-router-dom";
+import { Link } from 'react-router-dom'
 
 function Forget() {
     const [change, setChange] = useState({
-        email: '',
-        newPwd: ''
+        email: ''
     })
-    const { email, newPwd } = change
-    const handleChange =  (event) => {
+    const { email } = change
+    const handleChange = (event) => {
         const { name, value } = event.target
         setChange((preValue) => {
             return {
@@ -27,14 +27,10 @@ function Forget() {
         e.preventDefault()
 
         try {
-            if (!email && !newPwd) {
-                document.getElementById('error').innerHTML = 'Please enter your email and password!'
-            } else if (!email) {
+            if (!email) {
                 document.getElementById('error').innerHTML = 'Please enter your email!'
-            } else if (!newPwd) {
-                document.getElementById('error').innerHTML = 'Please enter your password!'
             } else {
-                await updateUserPassword(email, newPwd)
+                await updateUserPassword(email)
                 navigate('/login')
             }
         } catch (error) {
@@ -53,16 +49,14 @@ function Forget() {
                         {/* <input onChange={handleChange} value={contact.email} type='text' name='email' placeholder='Email' /> */}
                         <input onChange={handleChange} value={change.email} name='email' />
                     </div>
-                    <div className="form-group">
-                        <label>What's your new password...</label>
-                        {/* <input onChange={handleChange} value={contact.password} type='password' name='password' placeholder='Password' /> */}
-                        <input onChange={handleChange} value={change.newPwd} name='newPwd' />
-                    </div>
                     <div className="form-group right" >
-                        <p id='error' className="error" />
-                        <Button type='primaty' onClick={handleClick} >submit</Button>
+                        <p id='error' />
+                    </div>
+                    <div className="form-group">
+                        <label><Link to='/login'>I found my password!!!</Link></label>
                     </div>
                 </form>
+                <Button type='primary' onClick={handleClick} style={{width: '100px', height: '40px', fontSize: '20px', float: 'right', marginRight: '150px'}}>Submit</Button>
             </div>
         </div>
     )

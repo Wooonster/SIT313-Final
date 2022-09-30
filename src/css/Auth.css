@@ -71,7 +71,6 @@
 
 .auth-form .form {
     text-align: center;
-
 }
 
 .form-group {
@@ -106,7 +105,7 @@
     border-bottom: 3px solid #2088ff;
 }
 
-.form-group .error {
+.form-group #error {
     font-size: 16px;
     color: red;
 }
@@ -115,19 +114,3 @@
     text-align: end;
 }
 
-.form-group .button {
-    height: 50px;
-    width: 35%;
-    margin-top: 15px;
-    border: 2px solid white;
-    font-size: 18px;
-    font-weight: bold;
-    background: #2088ff;
-    border-radius: 10px;
-    color: #fff;
-}
-
-.form-group .button:hover {
-    background: #6dabe4 !important;
-    outline: 0;
-}

@@ -36,7 +36,7 @@ function Homepage() {
         const loadQuestions = async () => {
             try {
                 const q = await getQuestions()
-                console.log("q", q)
+                // console.log('q', q)
                 setQuestionList(q)
             } catch (error) {
                 console.log('load question failed', error.message)
@@ -49,22 +49,23 @@ function Homepage() {
 
     let filteredQuestion = []
     if (searchTerm === null)
-        filteredQuestion = questionList
+        for(var i = 0; i < questionList.length; i++) {
+            filteredQuestion.push(questionList[i][1])
+        }
     else {
         for (var i = 0; i < questionList.length; i++) {
             // console.log("questionList[i].title.toLowerCase()", searchTerm.toLowerCase())
             if (
-                questionList[i].title.toLowerCase().includes(searchTerm.toLowerCase())
-                || questionList[i].content.toLowerCase().includes(searchTerm.toLowerCase())
-                || questionList[i].tags.toLowerCase().includes(searchTerm.toLowerCase())
-                || questionList[i].createTime.toLowerCase().includes(searchTerm.toLowerCase())
+                questionList[i][1].title.toLowerCase().includes(searchTerm.toLowerCase())
+                || questionList[i][1].content.toLowerCase().includes(searchTerm.toLowerCase())
+                || questionList[i][1].tags.toLowerCase().includes(searchTerm.toLowerCase())
+                || questionList[i][1].createTime.toLowerCase().includes(searchTerm.toLowerCase())
             ) {
-                filteredQuestion.push(questionList[i])
+                filteredQuestion.push(questionList[i][1])
             }
         }
     }
 
-    // console.log("filteredQuestion", filteredQuestion)
 
     return (
         <div className="homepage">
@@ -90,9 +91,11 @@ function Homepage() {
             <div className='cardlist'>
                 {
                     filteredQuestion.map((question, i) => {
+                        {/* console.log(`question ${i}: `, questionList[i][0]) */}
                         return (
                             <CardItem
                                 id={i}
+                                questionID={questionList[i][0]}
                                 className='card'
                                 title={question.title}
                                 discription={question.content}

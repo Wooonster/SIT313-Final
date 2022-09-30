@@ -1,8 +1,9 @@
 import React, { useState } from 'react'
 import { Form, Radio } from 'antd'
 import Type from './Type';
+import { DoubleLeftOutlined } from '@ant-design/icons'
 import "antd/dist/antd.min.css";
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 function Post() {
     const [value, setValue] = useState('question')
@@ -10,6 +11,7 @@ function Post() {
         setValue(e.target.value)
     }
 
+    const navigate = useNavigate()
     const location = useLocation()
     // console.log("post location", location.state)
     const userEmail = location.state.email
@@ -18,7 +20,16 @@ function Post() {
     return (
         <div className='post' style={{ width: "80%", marginLeft: "10%" }}>
             <div className="posthead">
-                <p>New Post</p>
+                <p>
+                    <DoubleLeftOutlined onClick={() => {
+                        navigate('/', {
+                            state : {
+                                email: userEmail
+                            }
+                        })
+                    }} style={{ marginLeft: '5px', color: '#6dabe4' }} />
+                    <span style={{ marginLeft: '10px' }}>New Post</span>
+                </p>
             </div>
 
             <Form>

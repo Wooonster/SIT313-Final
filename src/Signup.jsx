@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { createAuthUserWithEmailAndPassword, createUserDocFromAuth } from './utils/firebase'
 import './css/Auth.css'
 import deakinLogo from './images/deakin-logo.jpg'
+import { Button } from "antd";
 import "antd/dist/antd.min.css";
 
 function Signup() {
@@ -50,20 +51,18 @@ function Signup() {
             console.log('user: ', user)
             // 可以加密
             await createUserDocFromAuth(user, { displayName, password })
-            // window.location = 'http://localhost:3000/login'
             navigate('/login')
         } catch (error) {
             console.log("create user error:", error.message)
             document.getElementById('error').innerHTML = 'Sign up error! Check your information!'
         }
-
     }
 
     return (
         <div className="auth">
             <div className="container">
                 <div className="logoPart">
-                    <img className="picture" src={deakinLogo}></img>
+                    <img className="picture" src={deakinLogo} alt='deakin logo'></img>
                     <p>Welcome Joining<br /><br /><span>DEV@DEAKIN</span></p>
                     <Link to='/login' >Click to Login</Link>
                 </div>
@@ -88,9 +87,11 @@ function Signup() {
                         </div>
                         <div className="form-group right" >
                             <p className="error" id="error"></p>
-                            <input onClick={handleSubmit} type='submit' name='login' id='login' value='Signup' className="button" />
                         </div>
                     </form>
+                    <div className="login-method">
+                    <Button type="primary" onClick={handleSubmit} name='login' value='Signup' style={{ width: '120px', height: '45px', fontSize: '21px' }}>Signup</Button>
+                </div>
                 </div>
 
             </div>

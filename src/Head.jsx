@@ -5,6 +5,7 @@ import { Row, Col, Input } from 'antd'
 import './css/Head.css'
 import "antd/dist/antd.min.css";
 import { SearchContext } from "./Context/search.context";
+import { SettingOutlined } from '@ant-design/icons'
 
 const { Search } = Input;
 
@@ -24,7 +25,7 @@ function Auth(props) {
             return (
                 <Col span={4} className='col'>
                     <p className="link" id="post"><Link to='/post' state={postData}>POST</Link></p>
-                    <p className="link" id="settings" ><Link to='/settings'>settings</Link></p>
+                    <p className="link" id="settings" ><Link to='/settings'><SettingOutlined /></Link></p>
                 </Col>
             )
         }

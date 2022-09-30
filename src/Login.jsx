@@ -93,12 +93,12 @@ function Login() {
                         <input onChange={handleChange} value={contact.password} type='password' name='password' placeholder='Password' />
                     </div>
                     <div className="form-group right" >
-                        <p className="error" id="error"></p>
-                        <input type='submit' onClick={handleSubmit} name='login' id='login' value='Login' className="button" />
+                        <p id="error"></p>
                     </div>
                 </form>
                 <div className="login-method">
                     <Button icon={<GoogleOutlined />} onClick={googleLogin}>Login with Google</Button>
+                    <Button type="primary" onClick={handleSubmit} name='login' value='Login' style={{ marginLeft: '10px' }}>Login</Button>
                 </div>
             </div>
         </div>

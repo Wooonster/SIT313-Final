@@ -6,22 +6,19 @@ import { saveQuestion2Fb } from "./utils/firebase";
 import { Button, notification } from 'antd';
 import "antd/dist/antd.min.css";
 import { PictuerContext } from "./Context/uploadpicture.context";
+import { useNavigate } from "react-router-dom";
 
 function Question(props) {
     const { currentTitle } = useContext(TitleContext)
-    // console.log("currentTitle: ", currentTitle)
     const { newPicture } = useContext(PictuerContext)
-    console.log("newPicture", newPicture)
     const userEmail = props.email
     const username = props.name
-    // console.log('user email:', userEmail)
 
     const [questionInfo, setQuestionInfo] = useState({
         content: '',
         tags: ''
     })
     const { content, tags } = questionInfo
-    console.log('questioninfo: ', questionInfo)
 
     const handleChange = (event) => {
         const { name, value } = event.target
@@ -33,13 +30,18 @@ function Question(props) {
         })
     }
 
+    const navigate = useNavigate()
     const saveQuestion = async () => {
         try {
             await saveQuestion2Fb(userEmail, username, currentTitle, content, tags, newPicture)
         } catch (error) {
             openNotificationWithIcon('error')
+            console.log('post question error', error.message)
         }
         openNotificationWithIcon('success')
+        navigate('/', {
+            state: userEmail
+        })
     }
 
     const openNotificationWithIcon = (type) => {

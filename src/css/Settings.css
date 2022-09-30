@@ -10,6 +10,9 @@
 
 .top #icon {
     margin-left: 20px;
+}
+
+.top #icon svg{
     width: 45px;
     height: 45px;
 }
@@ -23,9 +26,19 @@
     vertical-align: middle;
 }
 
-.top .avatar {
+.top .dash {
     margin: auto;
     text-align: center;
+}
+
+.dash #icon {
+    margin: auto 20px auto 20px;
+}
+
+.dash #icon svg {
+    color: #6dabe4;
+    width: 45px;
+    height: 45px;
 }
 
 .detail {
@@ -35,12 +48,13 @@
 }
 
 .detail .profile {
+    
     display: flex;
 }
 
 .profile .set {
     margin-left: 20px;
-    /* display: flex; */
+    display: flex;
 }
 
 .set p {
@@ -50,16 +64,18 @@
 }
 
 .set Button {
-    width: 150px;
-    height: 45px;
-    font-size: 18px;
-    margin-right: 10px;
+    width: 130px;
+    height: 40px;
+    font-size: 16px;
+    margin-left: 10px;
+    margin-top: 15px;
+    /* vertical-align: middle; */
 }
 
 .detail .basic-info {
     background-color: khaki;
     height: 500px;
-    margin-top: 20px;
+    margin-top: 60px;
 }
 
 .basic-info p {

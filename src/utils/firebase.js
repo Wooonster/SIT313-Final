@@ -2,9 +2,9 @@
 import { initializeApp } from "firebase/app";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, updatePassword } from "firebase/auth";
-import { getFirestore, doc, getDoc, getDocs, setDoc, updateDoc, collection } from 'firebase/firestore'
-import { ref, getStorage, uploadBytes, getDownloadURL } from 'firebase/storage'
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, sendPasswordResetEmail } from "firebase/auth";
+import { getFirestore, doc, getDoc, getDocs, setDoc, updateDoc, collection, addDoc } from 'firebase/firestore'
+import { ref, getStorage, uploadBytes } from 'firebase/storage'
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -78,7 +78,7 @@ export const readUserInfoByEmail = async (email) => {
   const userInfoDocRef = doc(db, 'userInfo', email)
   const docSnap = await getDoc(userInfoDocRef)
 
-  if(docSnap.exists()) {
+  if (docSnap.exists()) {
     // console.log('logged user info: ', docSnap.data())
     return docSnap.data()
   } else {
@@ -123,47 +123,27 @@ export const getUserNameByUserEmail = async (email) => {
   const userDocRef = doc(db, 'users', email)
   const docSnap = await getDoc(userDocRef)
   if (docSnap.exists()) {
+    let displayName = ''
     console.log("username by email: ", docSnap.data())
-    // return docSnap.data().additionalInfomation.displayName
-    // if (docSnap.data().additionalInfomation.displayName === null) return docSnap.data().displayName
-    // else return docSnap.data().additionalInfomation.displayName
-    if (docSnap.data().displayName !== '') {
-      // console.log("docSnap.data().displayName", docSnap.data().displayName)
-      return docSnap.data().displayName
-    } else {
-      console.log('docSnap.data().additionalInfomation.displayName', docSnap.data().additionalInfomation.displayName)
-      return docSnap.data().additionalInfomation.displayName
-    }
+    // if (docSnap.data().displayName !== '') {
+    //   return docSnap.data().displayName
+    // } else {
+    //   console.log('ddocSnap.data().displayName', docSnap.data().additionalInfomation.displayName)
+    //   return docSnap.data().additionalInfomation.displayName
+    // }
+    if (docSnap.data().displayName !== '' && docSnap.data().additionalInfomation.displayName === '')
+      displayName = docSnap.data().displayName
+    else if (docSnap.data().displayName === '' && docSnap.data().additionalInfomation.displayName !== '')
+      displayName = docSnap.data().additionalInfomation.displayName
+    else if (docSnap.data().displayName !== '' && docSnap.data().additionalInfomation.displayName !== '')
+      displayName = docSnap.data().displayName
+    else
+      displayName = ''
+    console.log('displayname', displayName)
+    return displayName
   } else {
     console.log("failed")
   }
-}
-
-// save avart to users
-export const addAvatarUrl2UserDb = async (email, url) => {
-  let avatarUrl = ''
-  const avatarRef = ref(storage, `images/${email}/avatars/${email}-avatar`)
-  try {
-    await uploadBytes(avatarRef, url).then((snapshot) => {
-      getDownloadURL(snapshot.ref).then((url) => {
-        avatarUrl = url
-      })
-    })
-    console.log("succeed")
-  } catch (error) {
-    console.log("upload avatar failed", error.message)
-  }
-  return avatarUrl
-}
-
-// download avatar from Storage
-export const getAvatarFromStorage = async (email) => {
-  let avatarUrl = ''
-  const avatarRef = ref(storage, `images/${email}/avatars/${email}-avatar`)
-  await getDownloadURL(avatarRef).then((url) => {
-    avatarUrl = url
-  })
-  return avatarUrl
 }
 
 // update username(displayname) in users
@@ -180,35 +160,24 @@ export const updateDisplayName = async (email, name) => {
 }
 
 // update user password
-export const updateUserPassword = async (email, pwd) => {
-  // const userDocRef = doc(db, 'users', email)
-  // try {
-  //   await updateDoc(userDocRef, {
-  //     "additionalInfomation.password": pwd
-  //   })
-  // } catch (error) {
-  //   console.log("password upload failed")
-  // }
-  try {
-    // updatePassword(auth, email, pwd)
-    updatePassword(email, pwd)
-    // updatePassword()
-  } catch (error) {
-    console.log('change pwd error', error)
-  }
+export const updateUserPassword = async (email) => {
+  sendPasswordResetEmail(auth, email).then(() => {
+    console.log('sent')
+  })
 }
 
 // save article
 export const saveArticle2Fb = async (email, username, title, abstract, content, tags, addedPicture) => {
   const createTime = new Date().toISOString()
-  const articleDocRef = doc(db, 'articles', createTime)
+  const articleDocRef = doc(db, 'articles')
   try {
-    await setDoc(articleDocRef, {
+    await addDoc(articleDocRef, {
       email,
       username,
       title,
       abstract,
       content,
+      createTime,
       tags
     })
 
@@ -224,17 +193,19 @@ export const saveArticle2Fb = async (email, username, title, abstract, content, 
 // save question
 export const saveQuestion2Fb = async (email, username, title, content, tags, addedPicture) => {
   const createTime = new Date().toISOString()
-  const questionDocRef = doc(db, 'questions', createTime)
+  // const questionDocRef = doc(db, 'questions')
+  const questionDocRef = collection(db, 'questions')
 
   try {
-    await setDoc(questionDocRef, {
+    await addDoc(questionDocRef, {
       email,
       username,
       createTime,
       title,
       content,
-      tags
+      tags,
     })
+    // console.log('new add question ref', questionDocRef.id)
 
     for (var i = 0; i < addedPicture.length; i++) {
       const pictureRef = ref(storage, `images/${email}/question/${title}-${i}`)
@@ -250,11 +221,30 @@ export const saveQuestion2Fb = async (email, username, title, content, tags, add
 export const readAllQuestions = async () => {
   const querySnapshot = await getDocs(collection(db, 'questions'))
   const allQuestion = []
+  let newList = []
   querySnapshot.forEach((doc) => {
     // console.log(doc.id, " => ", doc.data())
     allQuestion.push(doc.data())
+    newList.push([doc.id, doc.data()])
   })
+  // console.log('new question list', newList)
   // console.log("all questions: ", allQuestion)
-  return allQuestion
+  return newList
   // return querySnapshot
+}
+
+export const getQuestionById = async (id) => {
+  const docRef = doc(db, 'questions', id)
+  try {
+    const docSnap = await getDoc(docRef)
+    if (docSnap.exists()) {
+      console.log(`question ${id} is: `, docSnap.data())
+      return docSnap.data()
+    } else {
+      // doc.data() will be undefined in this case
+      console.log("No such document!");
+    }
+  } catch (error) {
+    console.log(`get question ${id} error: `, error.message)
+  }
 }

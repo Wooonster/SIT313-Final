@@ -1,0 +1,13 @@
+.detail {
+    width: 80%;
+    margin-left: 10%;
+}
+
+
+
+.content .comment .leave-btn {
+    width: 120px;
+    height: 45px;
+    font-size: 20px;
+    margin: 10px 0 auto auto;
+}

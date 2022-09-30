@@ -3,6 +3,7 @@ import { Card, Button, Modal } from 'antd'
 import { CloseOutlined } from '@ant-design/icons';
 import Draggable from 'react-draggable';
 import "antd/dist/antd.min.css";
+import { useNavigate } from 'react-router-dom';
 // import { getUserNameByUserEmail } from './utils/firebase';
 
 function CardItem(props) {
@@ -11,10 +12,15 @@ function CardItem(props) {
     }
 
     const [modalOpen, setModalOpen] = useState(false);
-    // const username = getUserNameByUserEmail(props.email)
-    // console.log('getUserNameByUserEmail(props.email)', getUserNameByUserEmail(props.email))
+    const navigate = useNavigate()
 
-    // console.log('card', props.username)
+    const click2Detail = () => {
+        navigate('/detail', {
+            state: {
+                questionId: props.questionID
+            }
+        })
+    }
 
     return (
         <Draggable>
@@ -42,8 +48,14 @@ function CardItem(props) {
                 }
                 hoverable
                 className="card"
+                onDoubleClick={click2Detail}
             >
-                <p>{props.discription}</p>
+                <p style={{
+                    display: '-webkit-box',
+                    WebkitBoxOrient: 'vertical',
+                    WebkitLineClamp: '3',
+                    overflow: 'hidden'
+                }}>{props.discription}</p>
                 <p>{props.tags}</p>
                 <p>{props.date}</p>
             </Card>

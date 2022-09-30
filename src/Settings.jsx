@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { AiOutlineHome } from "react-icons/ai"
-import { Avatar, Row, Col, Button, Input, Modal, Popover } from "antd";
-import { UploadOutlined } from '@ant-design/icons';
-import avatar from './images/jerry.jpg'
+import { LogoutOutlined, DashboardOutlined, MailOutlined, DoubleLeftOutlined } from '@ant-design/icons'
+import { Row, Col, Button, Input, Modal, Popover } from "antd";
 import './css/Settings.css'
-import { addAvatarUrl2UserDb, getAvatarFromStorage, getUserNameByUserEmail, saveUserInfo, updateDisplayName, auth, readUserInfoByEmail } from "./utils/firebase";
-import { useLocation, useNavigate } from "react-router-dom";
+import { getUserNameByUserEmail, saveUserInfo, updateDisplayName, auth, readUserInfoByEmail } from "./utils/firebase";
+import { useNavigate } from "react-router-dom";
 import "antd/dist/antd.min.css";
 
 function Settings() {
@@ -13,10 +11,9 @@ function Settings() {
     const user = auth.currentUser
     let currentUserEmail = ''
     // let currentUserDisplayName = ''
-    if(user !== null) {
+    if (user !== null) {
         console.log('current user', user)
         currentUserEmail = user.email
-        // currentUserDisplayName = user.
     }
 
     let authedUserName = ''
@@ -26,12 +23,12 @@ function Settings() {
         const username = getUserNameByUserEmail(currentUserEmail)
         username.then((result) => {
             authedUserName = result
-            console.log("username got from firebase", authedUserName)
+            // console.log("username got from firebase", authedUserName)
             document.getElementById('username').innerHTML = result
             document.getElementById('username2').innerHTML = result
         }).catch(error => console.log(error))
     } catch (error) {
-
+        console.log('get username error', error.message)
     }
 
     // read all userinfo
@@ -71,8 +68,6 @@ function Settings() {
 
         loadUserInfo()
     }, [])
-
-
 
     // initialize new user info
     const [info, setInfo] = useState({
@@ -159,7 +154,6 @@ function Settings() {
 
     // Modal hook
     const [modalOpen, setModalOpen] = useState(false);
-    const [avatarModalOpen, setAvatarModalOpen] = useState(false);
 
     // change name
     const [newUsername, setNewUsername] = useState('')
@@ -171,25 +165,6 @@ function Settings() {
         }
     }
 
-    // const [imageInfo, setImageInfo] = useState();
-    // let avatarUrl = ''
-    // let defaultAvatar = ''
-    // const uploadAvatar2Fb = async () => {
-    //     console.log("image got: ", loggedUserEmail, imageInfo)
-    //     try {
-    //         avatarUrl = addAvatarUrl2UserDb(loggedUserEmail, imageInfo)
-    //         console.log('new avatar', avatarUrl)
-    //         // document.getElementById('').setAttribute('src', avatarUrl)
-    //     } catch (error) {
-    //         console.log("upload error")
-    //     }
-    // }
-
-    // getAvatarFromStorage(loggedUserEmail).then((url) => {
-    //     defaultAvatar = url
-    //     // console.log("defaultAvatar", defaultAvatar)
-    // })
-
     // navigation
     const navigate = useNavigate()
 
@@ -198,13 +173,15 @@ function Settings() {
         <div>
             {/* <p>Content</p> */}
             {/* <p>Content</p> */}
-            <Button type='primary' onClick={() => {
-                auth.signOut().then(() => {
-                    navigate('/login')
-                }).catch((error) => {
-                    console.log('sign out failed', error.message)
-                })
-            }}>Sign out here</Button>
+            <Button type='primary'
+                icon={<LogoutOutlined />}
+                onClick={() => {
+                    auth.signOut().then(() => {
+                        navigate('/')
+                    }).catch((error) => {
+                        console.log('sign out failed', error.message)
+                    })
+                }}>Sign out here</Button>
         </div>
     )
 
@@ -212,7 +189,7 @@ function Settings() {
         <div className="settings">
             <Row className="top">
                 <Col span={10} className="icon">
-                    <AiOutlineHome id="icon" onClick={() => navigate('/', {
+                    <DoubleLeftOutlined id="icon" onClick={() => navigate('/', {
                         state: {
                             userEmail: currentUserEmail,
                             username: authedUserName
@@ -224,10 +201,12 @@ function Settings() {
                     />
                     <label>Hello, <span id='username'>xxx</span></label>
                 </Col>
-                <Col span={12}></Col>
-                <Col span={2} className='avatar'>
+                <Col span={11}></Col>
+                <Col span={3} className='dash'>
+                    <MailOutlined  id="icon" />
                     <Popover placement="bottom" content={content} trigger="click">
-                        <Avatar size={80} id="topAvatar" src={avatar} />
+                        {/* <Avatar size={80} id="topAvatar" src={avatar} /> */}
+                        <DashboardOutlined id="icon" />
                     </Popover>
 
                     {/* <img src={defaultAvatar}  /> */}
@@ -240,39 +219,9 @@ function Settings() {
                     {/* <img src={defaultAvatar} /> */}
                     <div className="set">
                         <p id="username2">xxx</p>
-                        {/* change avatar */}
-                        <Button type="primary" style={{ width: '180px' }} onClick={() => setAvatarModalOpen(true)}>Change Aavatar</Button>
-                        {/* <Modal
-                            title="Change Aavatar"
-                            centered
-                            open={avatarModalOpen}
-                            onOk={() => {
-                                uploadAvatar2Fb()
-                                setAvatarModalOpen(false)
-                            }}
-                            onCancel={() => setAvatarModalOpen(false)} >
-                            <Button
-                                type="primary"
-                                onClick={() => {
-                                    document.getElementById('broswer').click()
-                                }} icon={<UploadOutlined />}>Change Avatar</Button>
-                            <input
-                                type="file"
-                                id="broswer"
-                                // className=".hide_file"
-                                // placeholder="Choose Files"
-                                onChange={
-                                    (event) => {
-                                        // setImageUpload(event.target.files[0]);
-                                        // console.log('event.target.files: ', event.target.files)
-                                        setImageInfo(event.target.files[0])
-                                    }}
-                                hidden
-                            />
-                        </Modal> */}
 
                         {/* change name */}
-                        <Button type="primary" onClick={() => setModalOpen(true)}>Change Name</Button>
+                        <Button  onClick={() => setModalOpen(true)}>Change Name</Button>
                         <Modal
                             title="Change Username"
                             centered
@@ -339,7 +288,7 @@ function Settings() {
                         </Col>
                     </Row>
                 </div>
-                <div className="social"></div>
+                {/* <div className="social"></div> */}
             </div>
         </div>
     )
