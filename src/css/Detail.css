@@ -3,11 +3,35 @@
     margin-left: 10%;
 }
 
+.comment-hide {
+    display: none;
+}
 
-
-.content .comment .leave-btn {
+.content .comments .leave-btn {
     width: 120px;
     height: 45px;
     font-size: 20px;
     margin: 10px 0 auto auto;
 }
+
+.comment {
+    margin-top: 15px;
+}
+
+.comment .comment-author {
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.comment .comment-content {
+    display: '-webkit-box';
+    -webkit-box-orient: 'vertical';
+    -webkit-line-clamp: 3;
+    overflow: 'hidden';
+    font-size: 21px;
+}
+
+.comment .comment-time {
+    font-size: 16px;
+}
+

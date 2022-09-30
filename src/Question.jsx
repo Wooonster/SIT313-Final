@@ -34,11 +34,11 @@ function Question(props) {
     const saveQuestion = async () => {
         try {
             await saveQuestion2Fb(userEmail, username, currentTitle, content, tags, newPicture)
+            openNotificationWithIcon('success')
         } catch (error) {
             openNotificationWithIcon('error')
             console.log('post question error', error.message)
         }
-        openNotificationWithIcon('success')
         navigate('/', {
             state: userEmail
         })

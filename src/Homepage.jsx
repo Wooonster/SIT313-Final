@@ -49,7 +49,7 @@ function Homepage() {
 
     let filteredQuestion = []
     if (searchTerm === null)
-        for(var i = 0; i < questionList.length; i++) {
+        for (var i = 0; i < questionList.length; i++) {
             filteredQuestion.push(questionList[i][1])
         }
     else {
@@ -91,9 +91,9 @@ function Homepage() {
             <div className='cardlist'>
                 {
                     filteredQuestion.map((question, i) => {
-                        {/* console.log(`question ${i}: `, questionList[i][0]) */}
+                        {/* console.log(`question ${i}: `, questionList[i][0]) */ }
                         return (
-                            <CardItem
+                            <CardItem key={i}
                                 id={i}
                                 questionID={questionList[i][0]}
                                 className='card'

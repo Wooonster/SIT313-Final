@@ -36,7 +36,7 @@ export const createUserDocFromAuth = async (userAuth, additionalInfomation = {})
   // save the doc
   if (!userSnapshot.exists()) {
     let { displayName, email } = userAuth
-    const createdAt = new Date()
+    const createdAt = new Date().toLocaleString()
     displayName = additionalInfomation.displayName
     try {
       await setDoc(userDocRef, {
@@ -139,7 +139,7 @@ export const getUserNameByUserEmail = async (email) => {
       displayName = docSnap.data().displayName
     else
       displayName = ''
-    console.log('displayname', displayName)
+    // console.log('displayname', displayName)
     return displayName
   } else {
     console.log("failed")
@@ -168,7 +168,7 @@ export const updateUserPassword = async (email) => {
 
 // save article
 export const saveArticle2Fb = async (email, username, title, abstract, content, tags, addedPicture) => {
-  const createTime = new Date().toISOString()
+  const createTime = new Date().toLocaleString()
   const articleDocRef = doc(db, 'articles')
   try {
     await addDoc(articleDocRef, {
@@ -192,7 +192,7 @@ export const saveArticle2Fb = async (email, username, title, abstract, content, 
 
 // save question
 export const saveQuestion2Fb = async (email, username, title, content, tags, addedPicture) => {
-  const createTime = new Date().toISOString()
+  const createTime = new Date().toLocaleString()
   // const questionDocRef = doc(db, 'questions')
   const questionDocRef = collection(db, 'questions')
 
@@ -220,11 +220,9 @@ export const saveQuestion2Fb = async (email, username, title, content, tags, add
 // read questions
 export const readAllQuestions = async () => {
   const querySnapshot = await getDocs(collection(db, 'questions'))
-  const allQuestion = []
   let newList = []
   querySnapshot.forEach((doc) => {
     // console.log(doc.id, " => ", doc.data())
-    allQuestion.push(doc.data())
     newList.push([doc.id, doc.data()])
   })
   // console.log('new question list', newList)
@@ -247,4 +245,34 @@ export const getQuestionById = async (id) => {
   } catch (error) {
     console.log(`get question ${id} error: `, error.message)
   }
+}
+
+export const addUserComment = async (email, username, comment, questionId) => {
+  const commentDocRef = collection(db, 'comments')
+  const createTime = new Date().toLocaleString()
+  try {
+    await addDoc(commentDocRef, {
+      email,
+      username,
+      createTime,
+      comment,
+      questionId
+    })
+  } catch (error) {
+    console.log('fail store comment', error.message)
+  }
+}
+
+export const getUserComments = async () => {
+  const commentDocRef = collection(db, 'comments')
+  let allComments = []
+  try {
+    const querySnap = await getDocs(commentDocRef)
+    querySnap.forEach((doc) => {
+      allComments.push([doc.id, doc.data()])
+    })
+  } catch (error) {
+    console.log('get all comments failed', error.message)
+  }
+  return allComments
 }

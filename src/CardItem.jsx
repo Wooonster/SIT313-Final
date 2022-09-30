@@ -35,7 +35,7 @@ function CardItem(props) {
                         <Modal
                             title={props.title}
                             centered
-                            visible={modalOpen}
+                            open={modalOpen}
                             onOk={() => setModalOpen(false)}
                             onCancel={() => setModalOpen(false)}
                         >
