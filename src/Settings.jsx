@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { LogoutOutlined, DashboardOutlined, MailOutlined, DoubleLeftOutlined } from '@ant-design/icons'
-import { Row, Col, Button, Input, Modal, Popover } from "antd";
+import { Row, Col, Button, Input, Modal, Popover, Badge } from "antd";
 import './css/Settings.css'
 import { getUserNameByUserEmail, saveUserInfo, updateDisplayName, auth, readUserInfoByEmail } from "./utils/firebase";
 import { useNavigate } from "react-router-dom";
 import "antd/dist/antd.min.css";
+import MyCardList from "./MyCardList";
 
 function Settings() {
     // get current user
@@ -184,6 +185,11 @@ function Settings() {
                 }}>Sign out here</Button>
         </div>
     )
+    const mailboxContent = (
+        <div>
+            <Button type="primary">Check</Button>
+        </div>
+    )
 
     return (
         <div className="settings">
@@ -203,7 +209,11 @@ function Settings() {
                 </Col>
                 <Col span={11}></Col>
                 <Col span={3} className='dash'>
-                    <MailOutlined  id="icon" />
+                    <Badge count={5} offset={[-20, 5]}>
+                        <Popover placement="bottom" content={mailboxContent} trigger='click'>
+                            <MailOutlined id="icon" />
+                        </Popover>
+                    </Badge>
                     <Popover placement="bottom" content={content} trigger="click">
                         {/* <Avatar size={80} id="topAvatar" src={avatar} /> */}
                         <DashboardOutlined id="icon" />
@@ -221,7 +231,7 @@ function Settings() {
                         <p id="username2">xxx</p>
 
                         {/* change name */}
-                        <Button  onClick={() => setModalOpen(true)}>Change Name</Button>
+                        <Button onClick={() => setModalOpen(true)}>Change Name</Button>
                         <Modal
                             title="Change Username"
                             centered
@@ -288,7 +298,10 @@ function Settings() {
                         </Col>
                     </Row>
                 </div>
-                {/* <div className="social"></div> */}
+                <div className="mycard-list">
+                        <p className="title">My posts:</p>
+                    <MyCardList email={currentUserEmail} />
+                </div>
             </div>
         </div>
     )

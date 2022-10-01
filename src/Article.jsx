@@ -6,13 +6,15 @@ import { saveArticle2Fb } from "./utils/firebase";
 import { Button, notification } from 'antd';
 import "antd/dist/antd.min.css";
 import { PictuerContext } from "./Context/uploadpicture.context";
+import { useNavigate } from "react-router-dom";
 
 function Article(props) {
     const { currentTitle } = useContext(TitleContext)
-    console.log("currentTitle is: ", currentTitle)
+    // console.log("currentTitle is: ", currentTitle)
     const { newPicture } = useContext(PictuerContext)
-    console.log("newPicture", newPicture)
+    // console.log("newPicture", newPicture)
     const userEmail = props.email
+    const username = props.name
 
     const [articleInfo, setArticleInfo] = useState({
         abstract: '',
@@ -20,7 +22,7 @@ function Article(props) {
         tags: ''
     })
     const { abstract, content, tags } = articleInfo
-    console.log("aticleInfo is: ", articleInfo)
+    // console.log("aticleInfo is: ", articleInfo)
 
     const handleChange = (event) => {
         const { name, value } = event.target
@@ -32,13 +34,18 @@ function Article(props) {
         })
     }
 
+    const navigate = useNavigate()
     const saveArticle = async () => {
         try {
-            await saveArticle2Fb(userEmail, currentTitle, abstract, content, tags, newPicture)
+            await saveArticle2Fb(userEmail, username, currentTitle, abstract, content, tags, newPicture)
+            openNotificationWithIcon('success')
+            navigate('/', {
+                state: userEmail
+            })
         } catch (error) {
             openNotificationWithIcon('error')
+            console.log('post article error', error.message)
         }
-        openNotificationWithIcon('success')
     }
 
     const openNotificationWithIcon = (type) => {

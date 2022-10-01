@@ -39,7 +39,7 @@ function CardItem(props) {
                             onOk={() => setModalOpen(false)}
                             onCancel={() => setModalOpen(false)}
                         >
-                            <h3>{props.discription}</h3>
+                            <h3>{props.content}</h3>
                             <p>Post Time: <span style={{ color: "deepskyblue" }}>{props.date}</span></p>
                             <p>From: <span style={{ color: "deepskyblue" }}>{props.username}</span></p>
                         </Modal>
@@ -47,7 +47,7 @@ function CardItem(props) {
                     </p>
                 }
                 hoverable
-                className="card"
+                className={props.class}
                 onDoubleClick={click2Detail}
             >
                 <p style={{
@@ -55,7 +55,7 @@ function CardItem(props) {
                     WebkitBoxOrient: 'vertical',
                     WebkitLineClamp: '3',
                     overflow: 'hidden'
-                }}>{props.discription}</p>
+                }}>{props.show === 'question' ? props.content : props.abstract}</p>
                 <p>{props.tags}</p>
                 <p>{props.date}</p>
             </Card>

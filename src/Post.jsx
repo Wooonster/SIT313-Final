@@ -1,9 +1,10 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Form, Radio } from 'antd'
 import Type from './Type';
 import { DoubleLeftOutlined } from '@ant-design/icons'
 import "antd/dist/antd.min.css";
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { auth, getUserNameByUserEmail } from './utils/firebase';
 
 function Post() {
     const [value, setValue] = useState('question')
@@ -12,10 +13,20 @@ function Post() {
     }
 
     const navigate = useNavigate()
-    const location = useLocation()
-    // console.log("post location", location.state)
-    const userEmail = location.state.email
-    const username = location.state.username
+    let userEmail = ''
+    const [username, setUsername] = useState('')
+    const curUser = auth.currentUser
+    if (curUser !== null) {
+        userEmail = curUser.email
+    }
+    useEffect(() => {
+        if (userEmail !== '')
+            getUserNameByUserEmail(userEmail).then(res => {
+                setUsername(res)
+            })
+    }, [])
+
+    console.log('user info in post', userEmail, username)
 
     return (
         <div className='post' style={{ width: "80%", marginLeft: "10%" }}>
@@ -23,7 +34,7 @@ function Post() {
                 <p>
                     <DoubleLeftOutlined onClick={() => {
                         navigate('/', {
-                            state : {
+                            state: {
                                 email: userEmail
                             }
                         })

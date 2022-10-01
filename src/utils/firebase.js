@@ -169,9 +169,9 @@ export const updateUserPassword = async (email) => {
 // save article
 export const saveArticle2Fb = async (email, username, title, abstract, content, tags, addedPicture) => {
   const createTime = new Date().toLocaleString()
-  const articleDocRef = doc(db, 'articles')
+
   try {
-    await addDoc(articleDocRef, {
+    await addDoc(collection(db, 'articles'), {
       email,
       username,
       title,
@@ -194,10 +194,9 @@ export const saveArticle2Fb = async (email, username, title, abstract, content, 
 export const saveQuestion2Fb = async (email, username, title, content, tags, addedPicture) => {
   const createTime = new Date().toLocaleString()
   // const questionDocRef = doc(db, 'questions')
-  const questionDocRef = collection(db, 'questions')
 
   try {
-    await addDoc(questionDocRef, {
+    const docRef = await addDoc(collection(db, 'questions'), {
       email,
       username,
       createTime,
@@ -205,7 +204,7 @@ export const saveQuestion2Fb = async (email, username, title, content, tags, add
       content,
       tags,
     })
-    // console.log('new add question ref', questionDocRef.id)
+    console.log('new add question ref', docRef.id)
 
     for (var i = 0; i < addedPicture.length; i++) {
       const pictureRef = ref(storage, `images/${email}/question/${title}-${i}`)
@@ -229,6 +228,16 @@ export const readAllQuestions = async () => {
   // console.log("all questions: ", allQuestion)
   return newList
   // return querySnapshot
+}
+
+// read articles
+export const readAllAriticles = async () => {
+  const querySnapshot = await getDocs(collection(db, 'articles'))
+  let articles = []
+  querySnapshot.forEach(doc => {
+    articles.push([doc.id, doc.data()])
+  })
+  return articles
 }
 
 export const getQuestionById = async (id) => {

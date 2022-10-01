@@ -75,7 +75,7 @@
 .detail .basic-info {
     background-color: khaki;
     height: 500px;
-    margin-top: 60px;
+    margin-top: 30px;
 }
 
 .basic-info p {
@@ -133,4 +133,26 @@
     background-color: blanchedalmond;
     height: 400px;
     margin-top: 20px;
+}
+
+.mycard-list {
+    margin-top: 20px;
+    display: flex;
+    flex-wrap: wrap;   
+}
+
+.mycard-list .title {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.mycard {
+    border: 1px solid goldenrod;
+    flex: 1;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    width: calc(25% - 10px);
+    min-width: calc(25% - 10px);
+    max-width: calc(25% - 10px);
 }

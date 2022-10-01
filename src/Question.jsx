@@ -33,15 +33,17 @@ function Question(props) {
     const navigate = useNavigate()
     const saveQuestion = async () => {
         try {
+
             await saveQuestion2Fb(userEmail, username, currentTitle, content, tags, newPicture)
             openNotificationWithIcon('success')
+            navigate('/', {
+                state: userEmail
+            })
         } catch (error) {
             openNotificationWithIcon('error')
             console.log('post question error', error.message)
         }
-        navigate('/', {
-            state: userEmail
-        })
+        
     }
 
     const openNotificationWithIcon = (type) => {

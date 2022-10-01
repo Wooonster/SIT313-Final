@@ -6,25 +6,28 @@ import './css/Head.css'
 import "antd/dist/antd.min.css";
 import { SearchContext } from "./Context/search.context";
 import { SettingOutlined } from '@ant-design/icons'
+import { auth, getUserNameByUserEmail } from "./utils/firebase";
 
 const { Search } = Input;
 
-function Auth(props) {
+function Head() {
     const {searchTerm, setSearchTerm} = useContext(SearchContext)
 
-    let authedEmail = props.authed
-    let authedUserName = props.username
-    const postData = {
-        email: authedEmail,
-        username: authedUserName
+    let authedEmail = ''
+    let authedUserName = ''
+    
+    const curUser = auth.currentUser
+    // console.log('user from Head:', curUser)
+    if(curUser !== null) {
+        authedEmail = curUser.email
+        authedUserName = getUserNameByUserEmail(authedEmail)
     }
-    // console.log("authed: ", authedEmail, ', ', authedUserName)
 
     const authedReturn = () => {
-        if (authedEmail !== null) {
+        if (curUser !== null) {
             return (
                 <Col span={4} className='col'>
-                    <p className="link" id="post"><Link to='/post' state={postData}>POST</Link></p>
+                    <p className="link" id="post"><Link to='/post'>POST</Link></p>
                     <p className="link" id="settings" ><Link to='/settings'><SettingOutlined /></Link></p>
                 </Col>
             )
@@ -71,4 +74,4 @@ function Auth(props) {
 
 }
 
-export default Auth
+export default Head

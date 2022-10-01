@@ -1,9 +1,10 @@
 import { Row, Col, Input, Button, Skeleton, notification } from 'antd'
 import React, { useEffect, useState } from 'react'
-import { useLocation } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { addUserComment, auth, getQuestionById, getUserNameByUserEmail } from './utils/firebase'
 import CommentItem from './CommentItem'
 import './css/Detail.css'
+import Head from './Head'
 const { TextArea } = Input;
 
 function Detail() {
@@ -47,12 +48,13 @@ function Detail() {
   // set comment 
   const [comment, setComment] = useState('');
 
+  const curUser = auth.currentUser
+
+  let curUserEmail = ''
+  let curUserName = ''
+
   // upload comment to db
   const handleComment = async () => {
-    const curUser = auth.currentUser
-    console.log('current user: ', curUser)
-    let curUserEmail = ''
-    let curUserName = ''
     if (curUser !== null) {
       curUserEmail = curUser.email
       curUserName = await getUserNameByUserEmail(curUserEmail)
@@ -66,6 +68,12 @@ function Detail() {
       openNotificationWithIcon('error')
     }
   }
+
+  // const postData = {
+  //   email: curUserEmail,
+  //   username: curUserName
+  // }
+
 
   // make notification
   const openNotificationWithIcon = (type) => {
@@ -97,6 +105,7 @@ function Detail() {
 
   return (
     <div>
+      <Head />
       <div className='detail'>
         <Row>
           <Col span={16} className='content'>
