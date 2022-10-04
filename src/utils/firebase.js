@@ -124,7 +124,7 @@ export const getUserNameByUserEmail = async (email) => {
   const docSnap = await getDoc(userDocRef)
   if (docSnap.exists()) {
     let displayName = ''
-    console.log("username by email: ", docSnap.data())
+    // console.log("username by email: ", docSnap.data())
     // if (docSnap.data().displayName !== '') {
     //   return docSnap.data().displayName
     // } else {
@@ -240,6 +240,7 @@ export const readAllAriticles = async () => {
   return articles
 }
 
+// read question by id
 export const getQuestionById = async (id) => {
   const docRef = doc(db, 'questions', id)
   try {
@@ -253,6 +254,21 @@ export const getQuestionById = async (id) => {
     }
   } catch (error) {
     console.log(`get question ${id} error: `, error.message)
+  }
+}
+
+// read article by id
+export const getArticleById = async (id) => {
+  const docRef = doc(db, 'articles', id)
+  try {
+    const docSnap = await getDoc(docRef)
+    if(docSnap.exists()) {
+      return docSnap.data()
+    } else {
+      console.log("No such document!");
+    }
+  } catch (error) {
+    console.log(`get article ${id} error: `, error.message)
   }
 }
 

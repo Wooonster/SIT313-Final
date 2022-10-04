@@ -1,0 +1,16 @@
+.plan .title {
+    text-align: center;
+    font-size: 36px;
+    font-style: italic;
+    margin-top: 50px;
+}
+
+.price-table {
+    display: flex;
+}
+
+.price-table .ant-card-head-title {
+    font-size: 24px;
+    text-align: center;
+    color: dodgerblue;
+}

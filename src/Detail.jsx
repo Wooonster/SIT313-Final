@@ -1,55 +1,62 @@
 import { Row, Col, Input, Button, Skeleton, notification } from 'antd'
 import React, { useEffect, useState } from 'react'
-import { Link, useLocation } from 'react-router-dom'
-import { addUserComment, auth, getQuestionById, getUserNameByUserEmail } from './utils/firebase'
+import { useLocation } from 'react-router-dom'
+import { addUserComment, auth, getArticleById, getQuestionById, getUserNameByUserEmail } from './utils/firebase'
 import CommentItem from './CommentItem'
 import './css/Detail.css'
 import Head from './Head'
+import ReactMarkdown from 'react-markdown'
 const { TextArea } = Input;
 
 function Detail() {
   const location = useLocation()
-  const questionId = location.state.questionId
-  // console.log('question id', id)
+  const id = location.state.id
+  const type = location.state.type
 
-  // get this question
-  const getQuestion = async () => {
-    return getQuestionById(questionId).then(res => {
-      return res
-    })
-  }
-  const [questionInfo, setQuestionInfo] = useState({
+  // set info useState hook
+  const [info, setInfo] = useState({
     title: '',
     content: '',
     createTime: '',
     tags: '',
     username: '',
-    email: ''
+    email: '',
+    abstract: ''
   })
+  
+  // set info
   useEffect(() => {
-    const loadQuestion = async () => {
-      try {
-        const q = await getQuestion()
-        setQuestionInfo({
-          title: q.title,
-          content: q.content,
-          createTime: q.createTime,
-          tags: q.tags,
-          username: q.username,
-          email: q.email
+    if (type === 'article') {
+      getArticleById(id).then(res => {
+        setInfo({
+          title: res.title,
+          content: res.content,
+          createTime: res.createTime,
+          tags: res.tags,
+          username: res.username,
+          email: res.email,
+          abstract: res.abstract
         })
-      } catch (error) {
-        console.log('loadQuestion error', error.message)
-      }
+        // console.log('article res', res)
+      })
+    } else {
+      getQuestionById(id).then(res => {
+        setInfo({
+          title: res.title,
+          content: res.content,
+          createTime: res.createTime,
+          tags: res.tags,
+          username: res.username,
+          email: res.email
+        })
+      })
     }
-    loadQuestion()
   }, [])
 
   // set comment 
   const [comment, setComment] = useState('');
 
   const curUser = auth.currentUser
-
   let curUserEmail = ''
   let curUserName = ''
 
@@ -60,7 +67,7 @@ function Detail() {
       curUserName = await getUserNameByUserEmail(curUserEmail)
     }
     try {
-      await addUserComment(curUserEmail, curUserName, comment, questionId)
+      await addUserComment(curUserEmail, curUserName, comment, id)
       openNotificationWithIcon('success')
       setComment('')
     } catch (error) {
@@ -68,12 +75,6 @@ function Detail() {
       openNotificationWithIcon('error')
     }
   }
-
-  // const postData = {
-  //   email: curUserEmail,
-  //   username: curUserName
-  // }
-
 
   // make notification
   const openNotificationWithIcon = (type) => {
@@ -111,8 +112,8 @@ function Detail() {
           <Col span={16} className='content'>
             <Row className='text'>
               <Skeleton active loading={loadingState}>
-                <h1>{questionInfo.title}</h1>
-                <p>{questionInfo.content}</p>
+                <h1>{info.title}</h1>
+                <ReactMarkdown children={info.content}/>
               </Skeleton>
             </Row>
             <Row className={hidden ? 'comment-hide' : 'comments'}>
@@ -129,14 +130,16 @@ function Detail() {
               <Button type='primary' className='leave-btn' onClick={handleComment} disabled={isBtnDisabled} >comment</Button>
             </Row>
             <Row>
-              <CommentItem questionId={questionId} />
+              <CommentItem id={id}/>
             </Row>
           </Col>
           <Col span={8} className='author-info'>
             <div>
-              <h3>Author: <span>{questionInfo.username}</span></h3>
-              <p>Post time: <span>{questionInfo.createTime}</span></p>
-              <p>Tags: <span>{questionInfo.tags}</span></p>
+              <h3>Author: <span>{info.username}</span></h3>
+              <p>Post time: <span>{info.createTime}</span></p>
+              <p>Tags: <span>{info.tags}</span></p>
+              {/* <p>Abstract: <span>{info.abstract}</span></p> */}
+              {info.abstract === 'null' ? '' : (<p>Abstract: <span>{info.abstract}</span></p>)}
             </div>
           </Col>
         </Row>

@@ -298,9 +298,9 @@ function Settings() {
                         </Col>
                     </Row>
                 </div>
-                <div className="mycard-list">
-                        <p className="title">My posts:</p>
-                    <MyCardList email={currentUserEmail} />
+                <div >
+                    <p className="title">My posts:</p>
+                    <MyCardList email={currentUserEmail} className="mycard-list" />
                 </div>
             </div>
         </div>

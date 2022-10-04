@@ -7,34 +7,25 @@ import { Button, notification } from 'antd';
 import "antd/dist/antd.min.css";
 import { PictuerContext } from "./Context/uploadpicture.context";
 import { useNavigate } from "react-router-dom";
+import MarkDownIn from "./utils/MarkDownIn";
+import MarkDownRes from "./utils/MarkDownRes";
+import { MarkdownContext } from "./Context/editor.context";
 
 function Question(props) {
     const { currentTitle } = useContext(TitleContext)
     const { newPicture } = useContext(PictuerContext)
+    const { mdContext } = useContext(MarkdownContext)
+
     const userEmail = props.email
     const username = props.name
 
-    const [questionInfo, setQuestionInfo] = useState({
-        content: '',
-        tags: ''
-    })
-    const { content, tags } = questionInfo
-
-    const handleChange = (event) => {
-        const { name, value } = event.target
-        setQuestionInfo((preValue) => {
-            return {
-                ...preValue,
-                [name]: value
-            }
-        })
-    }
+    const [tags, setTags] = useState('')
 
     const navigate = useNavigate()
     const saveQuestion = async () => {
         try {
 
-            await saveQuestion2Fb(userEmail, username, currentTitle, content, tags, newPicture)
+            await saveQuestion2Fb(userEmail, username, currentTitle, mdContext, tags, newPicture)
             openNotificationWithIcon('success')
             navigate('/', {
                 state: userEmail
@@ -43,7 +34,7 @@ function Question(props) {
             openNotificationWithIcon('error')
             console.log('post question error', error.message)
         }
-        
+
     }
 
     const openNotificationWithIcon = (type) => {
@@ -62,20 +53,22 @@ function Question(props) {
         }
     };
 
+
     return (
         <div className="main-body">
             <PostHead />
 
-            <div className="Qmain">
-                <p>Describe your problem</p>
-                <textarea id='question' onChange={handleChange} value={questionInfo.content} name="content" style={{ minHeight: 100 }} />
-
-            </div>
+            {/* <div className="Qmain"> */}
+            <p>Describe your problem</p>
+            <MarkDownIn />
+            <MarkDownRes />
+            {/* <textarea id='question' onChange={handleChange} value={questionInfo.content} name="content" style={{ minHeight: 100 }} /> */}
+            {/* </div> */}
 
             <div className="footer">
                 <div className="input-title">
                     <label >Tags</label>
-                    <input id='tags' onChange={handleChange} value={questionInfo.tags} name='tags' style={{ width: '100%' }} placeholder='Please add up to 3 tags to describe what your article is about e.g., Java' />
+                    <input id='tags' onChange={(e) => {setTags(e.target.value)}} value={tags} name='tags' style={{ width: '100%' }} placeholder='Please add up to 3 tags to describe what your article is about e.g., Java' />
                 </div>
                 <div className="btn">
                     <Button type="primary" onClick={saveQuestion} >Post</Button>

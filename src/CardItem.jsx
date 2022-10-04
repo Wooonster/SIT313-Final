@@ -4,6 +4,7 @@ import { CloseOutlined } from '@ant-design/icons';
 import Draggable from 'react-draggable';
 import "antd/dist/antd.min.css";
 import { useNavigate } from 'react-router-dom';
+import ReactMarkdown from 'react-markdown';
 // import { getUserNameByUserEmail } from './utils/firebase';
 
 function CardItem(props) {
@@ -14,12 +15,24 @@ function CardItem(props) {
     const [modalOpen, setModalOpen] = useState(false);
     const navigate = useNavigate()
 
+    // console.log('ids', props.questionID, ' ', props.articleID)
     const click2Detail = () => {
-        navigate('/detail', {
-            state: {
-                questionId: props.questionID
-            }
-        })
+        if (props.show === 'question') {
+            navigate('/detail', {
+                state: {
+                    type: props.show,
+                    id: props.questionID
+                }
+            })
+        } else {
+            navigate('/detail', {
+                state: {
+                    type: props.show,
+                    id: props.articleID
+                }
+            })
+        }
+
     }
 
     return (
@@ -50,12 +63,14 @@ function CardItem(props) {
                 className={props.class}
                 onDoubleClick={click2Detail}
             >
-                <p style={{
+                <div style={{
                     display: '-webkit-box',
                     WebkitBoxOrient: 'vertical',
-                    WebkitLineClamp: '3',
+                    WebkitLineClamp: '2',
                     overflow: 'hidden'
-                }}>{props.show === 'question' ? props.content : props.abstract}</p>
+                }}>
+                    <ReactMarkdown children={props.show === 'question' ? props.content : props.abstract} />
+                </div>
                 <p>{props.tags}</p>
                 <p>{props.date}</p>
             </Card>

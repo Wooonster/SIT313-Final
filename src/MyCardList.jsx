@@ -1,31 +1,25 @@
 import React, { useState, useEffect } from 'react'
-import { readAllQuestions } from './utils/firebase';
+import { readAllAriticles, readAllQuestions } from './utils/firebase';
 import CardItem from './CardItem';
 
 function MyCardList(props) {
     const [questionList, setQuestionList] = useState([])
-    const getQuestions = async () => {
-        return readAllQuestions().then(res => {
-            return res
-        })
-    }
+    const [articleList, setArticleList] = useState([])
+
 
     useEffect(() => {
-        const loadQuestions = async () => {
-            try {
-                const q = await getQuestions()
-                // console.log('q', q)
-                setQuestionList(q)
-            } catch (error) {
-                console.log('load question failed', error.message)
-            }
-        }
+        readAllQuestions().then(res =>{
+            setQuestionList(res)
+        })
 
-        loadQuestions()
+        readAllAriticles().then(res => {
+            setArticleList(res)
+        })
     }, [])
-
-
     const filteredQuestion = questionList.filter((question) => question[1].email === props.email)
+    const filteredArticle = articleList.filter((article)=>article[1].email === props.email)
+
+    console.log('filtered', filteredArticle, ', ', filteredQuestion)
 
     return (
         <div className='mycard-list'>
@@ -33,15 +27,33 @@ function MyCardList(props) {
                 filteredQuestion.map((question, i) => {
                     {/* console.log(`question ${i}: `, question) */}
                     return (
-                        <CardItem key={i}
+                        <CardItem key={`question${i}`}
                             id={i}
                             class={'mycard'}
+                            show='question'
                             questionID={questionList[i][0]}
                             title={question[1].title}
                             discription={question[1].content}
                             tags={question[1].tags}
                             date={question[1].createTime}
                             username={question[1].username} />
+                    )
+                })
+            }
+            {
+                filteredArticle.map((article, i) => {
+                    return (
+                        <CardItem key={`article${i}`}
+                            id={i}
+                            class={'mycard'}
+                            show='article'
+                            articleID={articleList[i][0]}
+                            title={article[1].title}
+                            abstract={article.abstract}
+                            discription={article[1].content}
+                            tags={article[1].tags}
+                            date={article[1].createTime}
+                            username={article[1].username} />
                     )
                 })
             }

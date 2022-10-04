@@ -8,6 +8,7 @@ import Settings from './Settings';
 import Post from './Post'
 import Forget from './Forget'
 import Detail from './Detail';
+import Plan from './Plan'
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
         <Route path='/post' element={<Post />} />
         <Route path='/detail' element={<Detail />} />
         <Route path='/forget' element={<Forget />} />
+        <Route path='/plan' element={<Plan /> } />
       </Routes>
     </div>
   );

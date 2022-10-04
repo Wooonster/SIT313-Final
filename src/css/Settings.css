@@ -141,9 +141,10 @@
     flex-wrap: wrap;   
 }
 
-.mycard-list .title {
+.title {
     font-size: 24px;
     font-weight: bold;
+    margin-top: 15px;
     margin-bottom: 10px;
 }
 

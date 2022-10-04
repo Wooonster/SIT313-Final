@@ -2,23 +2,6 @@
     width: 100%;
 }
 
-.Qmain {
-    width: 100%;
-}
-
-.Qmain p{
-    margin-top: 12px;
-    margin-bottom: 5px;
-    font-size: 18px;
-    font-weight: 700;
-}
-
-.Qmain TextArea {
-    width: 100%;
-    height: 420px;
-    font-size: 18px;
-}
-
 .footer {
     position: fixed;
     bottom: 0;

@@ -28,24 +28,10 @@ function Homepage() {
     const [questionList, setQuestionList] = useState([])
     const [articleList, setArticleList] = useState([])
 
-    const getQuestions = async () => {
-        return readAllQuestions().then(res => {
-            return res
-        })
-    }
-
     useEffect(() => {
-        const loadQuestions = async () => {
-            try {
-                const q = await getQuestions()
-                console.log('q', q)
-                setQuestionList(q)
-            } catch (error) {
-                console.log('load question failed', error.message)
-            }
-        }
-
-        loadQuestions()
+        readAllQuestions().then(res =>{
+            setQuestionList(res)
+        })
 
         readAllAriticles().then(res => {
             setArticleList(res)
@@ -103,7 +89,7 @@ function Homepage() {
                     {
                         filteredQuestion.map((question, i) => {
                             return (
-                                <CardItem key='question'
+                                <CardItem key={`question${i}`}
                                     id={i}
                                     show='question'
                                     class={'card'}
@@ -127,8 +113,9 @@ function Homepage() {
                 <div className='cardlist'>
                     {
                         filteredArticle.map((article, i) => {
+                            {/* console.log(`article${i} id is: `, articleList[i][0]) */}
                             return (
-                                <CardItem key='article'
+                                <CardItem key={`article${i}`}
                                     id={i}
                                     show='article'
                                     class={'card'}

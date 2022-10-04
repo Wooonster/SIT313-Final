@@ -28,6 +28,7 @@ function Head() {
             return (
                 <Col span={4} className='col'>
                     <p className="link" id="post"><Link to='/post'>POST</Link></p>
+                    <p className="link" id="plan"><Link to='/plan'>Go PRO</Link></p>
                     <p className="link" id="settings" ><Link to='/settings'><SettingOutlined /></Link></p>
                 </Col>
             )
