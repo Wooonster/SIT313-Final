@@ -1,0 +1,34 @@
+.foot {
+    width: 100%;
+    background-color: lightblue;
+}
+
+.foot-head .ant-col {
+    margin: 0 auto;
+}
+
+.foot-head .links p{
+    text-align: center;
+    font-size: 21px;
+}
+
+.foot-head .links a {
+    font-size: 20px;
+    color: azure;
+}
+
+.name p{
+    width: 100%;
+    text-align: center;
+    /* margin: 0 auto; */
+    font-size: 26px;
+}
+
+.links p {
+    margin: 0 auto;
+}
+
+.discription p {
+    text-align: center;
+    margin: 0 auto;
+}

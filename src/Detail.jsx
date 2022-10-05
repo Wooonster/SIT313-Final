@@ -6,6 +6,7 @@ import CommentItem from './CommentItem'
 import './css/Detail.css'
 import Head from './Head'
 import ReactMarkdown from 'react-markdown'
+import Foot from './Foot'
 const { TextArea } = Input;
 
 function Detail() {
@@ -144,6 +145,7 @@ function Detail() {
           </Col>
         </Row>
       </div>
+      <Foot />
     </div>
 
   )

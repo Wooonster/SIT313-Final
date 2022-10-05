@@ -1,5 +1,5 @@
 import Head from './Head'
-import { Carousel, Tabs } from 'antd';
+import { Carousel, Tabs, Modal, Input, Button } from 'antd';
 import './css/Homepage.css'
 import React, { useContext, useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
@@ -7,6 +7,7 @@ import "antd/dist/antd.min.css";
 import { SearchContext } from './Context/search.context';
 import CardItem from './CardItem';
 import { readAllAriticles, readAllQuestions } from './utils/firebase';
+import Foot from './Foot';
 
 function Homepage() {
     const location = useLocation()
@@ -29,7 +30,7 @@ function Homepage() {
     const [articleList, setArticleList] = useState([])
 
     useEffect(() => {
-        readAllQuestions().then(res =>{
+        readAllQuestions().then(res => {
             setQuestionList(res)
         })
 
@@ -113,7 +114,7 @@ function Homepage() {
                 <div className='cardlist'>
                     {
                         filteredArticle.map((article, i) => {
-                            {/* console.log(`article${i} id is: `, articleList[i][0]) */}
+                            {/* console.log(`article${i} id is: `, articleList[i][0]) */ }
                             return (
                                 <CardItem key={`article${i}`}
                                     id={i}
@@ -135,13 +136,31 @@ function Homepage() {
         }
     ]
 
+    const [subscribeEmail, setSubscribeEmail] = useState('')
+    // console.log(subscribeEmail)
+    const handleOk = async () => {
+        await fetch('http://localhost:4000/', {
+            method: 'post',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                email: subscribeEmail
+            })
+        })
+            .then(response => response.json())
+            .then(data => JSON.parse(data))
+            .catch(err => console.log('error', err.message))
+
+    }
+
     return (
         <div className="homepage">
             <Head />
 
             <Carousel autoplay>
                 <div className="calousel">
-                    <h3 >1</h3>
+                    <h3>1</h3>
                 </div>
                 <div className="calousel">
                     <h3 >2</h3>
@@ -149,15 +168,31 @@ function Homepage() {
                 <div className="calousel">
                     <h3 >3</h3>
                 </div>
-                <div className="calousel">
-                    <h3 >4</h3>
-                </div>
             </Carousel>
 
             <p className="welcome">Welcome to Job Finder, DEV@DEAKIN!</p>
 
             <Tabs centered items={items} />
 
+
+            <div style={{
+                display: 'flex',
+                width: '80%',
+                margin: '15px 0 10px 10%'
+            }}>
+                <label>Sign up for our daily insider!</label>
+                <Input 
+                style={{
+                    width: '80%',
+                    margin: '0 10px'
+                }}
+                onChange={(e) => {
+                    e.preventDefault()
+                    setSubscribeEmail(e.target.value)
+                }} />
+                <Button type='primary' onClick={handleOk}>click</Button>
+            </div>
+            <Foot />
         </div>
     )
 }

@@ -6,6 +6,7 @@ import { getUserNameByUserEmail, saveUserInfo, updateDisplayName, auth, readUser
 import { useNavigate } from "react-router-dom";
 import "antd/dist/antd.min.css";
 import MyCardList from "./MyCardList";
+import Foot from "./Foot";
 
 function Settings() {
     // get current user
@@ -303,6 +304,8 @@ function Settings() {
                     <MyCardList email={currentUserEmail} className="mycard-list" />
                 </div>
             </div>
+
+            <Foot />
         </div>
     )
 }

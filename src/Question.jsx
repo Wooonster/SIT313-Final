@@ -16,6 +16,8 @@ function Question(props) {
     const { newPicture } = useContext(PictuerContext)
     const { mdContext } = useContext(MarkdownContext)
 
+    console.log('markdown text', mdContext)
+
     const userEmail = props.email
     const username = props.name
 

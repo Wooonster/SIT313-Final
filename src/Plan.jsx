@@ -3,6 +3,7 @@ import Head from './Head'
 import './css/Plan.css'
 // import { Card } from 'antd'
 import PriceCard from './PriceCard'
+import Foot from './Foot'
 
 function Plan() {
   // const curUser = auth.currentUser
@@ -22,6 +23,8 @@ function Plan() {
         <PriceCard title='Golden' borderColor='goldenrod' price='$199' link='https://buy.stripe.com/test_eVadU9gbNe1q5sQbIK' rights={goldenRights} />
         
       </div>
+
+      <Foot />
     </div>
   )
 }
