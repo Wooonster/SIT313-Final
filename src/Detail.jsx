@@ -1,12 +1,16 @@
 import { Row, Col, Input, Button, Skeleton, notification } from 'antd'
+import { DoubleLeftOutlined } from '@ant-design/icons'
 import React, { useEffect, useState } from 'react'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { addUserComment, auth, getArticleById, getQuestionById, getUserNameByUserEmail } from './utils/firebase'
 import CommentItem from './CommentItem'
 import './css/Detail.css'
 import Head from './Head'
-import ReactMarkdown from 'react-markdown'
 import Foot from './Foot'
+import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
+
+
 const { TextArea } = Input;
 
 function Detail() {
@@ -24,7 +28,7 @@ function Detail() {
     email: '',
     abstract: ''
   })
-  
+
   // set info
   useEffect(() => {
     if (type === 'article') {
@@ -104,17 +108,30 @@ function Detail() {
   }, [])
 
   const isBtnDisabled = comment.length === 0
+  const navigate = useNavigate()
 
   return (
     <div>
       <Head />
+      <Button type='link' icon={<DoubleLeftOutlined />}
+        onClick={() => {
+
+          navigate('/')
+        }}
+        style={{
+          fontSize: 18,
+          marginLeft: '15px',
+          marginTop: '10px'
+        }}>Back</Button>
       <div className='detail'>
         <Row>
           <Col span={16} className='content'>
             <Row className='text'>
               <Skeleton active loading={loadingState}>
                 <h1>{info.title}</h1>
-                <ReactMarkdown children={info.content}/>
+                <div className='content'>
+                  <ReactMarkdown children={info.content} remarkPlugins={[remarkGfm]} />
+                </div>
               </Skeleton>
             </Row>
             <Row className={hidden ? 'comment-hide' : 'comments'}>
@@ -131,16 +148,17 @@ function Detail() {
               <Button type='primary' className='leave-btn' onClick={handleComment} disabled={isBtnDisabled} >comment</Button>
             </Row>
             <Row>
-              <CommentItem id={id}/>
+
+              <CommentItem id={id} />
             </Row>
           </Col>
-          <Col span={8} className='author-info'>
-            <div>
+          <Col span={8} >
+            <div className='author-info'>
               <h3>Author: <span>{info.username}</span></h3>
               <p>Post time: <span>{info.createTime}</span></p>
               <p>Tags: <span>{info.tags}</span></p>
               {/* <p>Abstract: <span>{info.abstract}</span></p> */}
-              {info.abstract === 'null' ? '' : (<p>Abstract: <span>{info.abstract}</span></p>)}
+              {/* {info.abstract === 'null' ? '' : (<p>Abstract: {info.abstract}</p>)} */}
             </div>
           </Col>
         </Row>

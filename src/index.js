@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { StrictMode } from 'react';
 import ReactDOM from 'react-dom/client';
 import './css/index.css';
 import App from './App';
@@ -15,7 +15,9 @@ root.render(
       <MarkdownProvider>
         <PictureProvider>
           <SearchProvider>
-            <App />
+            <StrictMode>
+              <App />
+            </StrictMode>
           </SearchProvider>
         </PictureProvider>
       </MarkdownProvider>

@@ -60,17 +60,14 @@ function Question(props) {
         <div className="main-body">
             <PostHead />
 
-            {/* <div className="Qmain"> */}
             <p>Describe your problem</p>
             <MarkDownIn />
             <MarkDownRes />
-            {/* <textarea id='question' onChange={handleChange} value={questionInfo.content} name="content" style={{ minHeight: 100 }} /> */}
-            {/* </div> */}
 
             <div className="footer">
                 <div className="input-title">
                     <label >Tags</label>
-                    <input id='tags' onChange={(e) => {setTags(e.target.value)}} value={tags} name='tags' style={{ width: '100%' }} placeholder='Please add up to 3 tags to describe what your article is about e.g., Java' />
+                    <input id='tags' onChange={(e) => { setTags(e.target.value) }} value={tags} name='tags' style={{ width: '100%' }} placeholder='Please add up to 3 tags to describe what your article is about e.g., Java' />
                 </div>
                 <div className="btn">
                     <Button type="primary" onClick={saveQuestion} >Post</Button>

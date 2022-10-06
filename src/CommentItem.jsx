@@ -44,9 +44,9 @@ function CommentItem(props) {
                             <span className='comment-time'>{comment[1].createTime}</span>
                             {/* <Button type='link' icon={isliked ? <LikeFilled /> : <LikeOutlined />} value={isliked} onClick={this.likeClick} >Like</Button> */}
                             {/* <Button type='link' icon={<DislikeOutlined />} >Dislike</Button> */}
-                            <Button type='link' onClick={() => {
+                            {/* <Button type='link' onClick={() => {
                                 setShowReply((preValue) => { return !preValue })
-                            }} >Reply</Button>
+                            }} >Reply</Button> */}
                         </div>
                         <div className={showReply ? 'reply' : 'reply-hide'} >
                             <TextArea

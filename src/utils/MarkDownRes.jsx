@@ -1,10 +1,10 @@
 import React, { useContext } from 'react'
 import { MarkdownContext } from '../Context/editor.context'
-import ReactMarkdown from 'react-markdown';
+import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
 
 function MarkDownRes() {
     const { mdContext } = useContext(MarkdownContext)
-    // console.log('res', mdContext)
 
     return (
         <div className='md-res'>
@@ -19,14 +19,13 @@ function MarkDownRes() {
                 backgroundColor: 'goldenrod'
             }}>Markdown result</p>
             <div className='res' style={{
-                    display: '-webkit-box',
-                    WebkitBoxOrient: 'vertical',
-                    WebkitLineClamp: '8',
-                    overflow: 'scroll'
-                }}>
-                <ReactMarkdown children={mdContext} />
+                display: '-webkit-box',
+                WebkitBoxOrient: 'vertical',
+                WebkitLineClamp: '6',
+                overflow: 'scroll'
+            }}>
+                <ReactMarkdown children={mdContext} remarkPlugins={[remarkGfm]} />
             </div>
-
         </div>
     )
 }

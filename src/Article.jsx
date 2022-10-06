@@ -3,25 +3,29 @@ import './css/Article.css'
 import PostHead from "./PostHead";
 import { TitleContext } from "./Context/title.context";
 import { saveArticle2Fb } from "./utils/firebase";
-import { Button, notification } from 'antd';
+import { Button, notification, Input } from 'antd';
 import "antd/dist/antd.min.css";
 import { PictuerContext } from "./Context/uploadpicture.context";
 import { useNavigate } from "react-router-dom";
+import MarkDownIn from "./utils/MarkDownIn";
+import MarkDownRes from "./utils/MarkDownRes";
+import { MarkdownContext } from "./Context/editor.context";
+
+const { TextArea } = Input;
 
 function Article(props) {
     const { currentTitle } = useContext(TitleContext)
-    // console.log("currentTitle is: ", currentTitle)
     const { newPicture } = useContext(PictuerContext)
-    // console.log("newPicture", newPicture)
+    const { mdContext } = useContext(MarkdownContext)
+
     const userEmail = props.email
     const username = props.name
 
     const [articleInfo, setArticleInfo] = useState({
         abstract: '',
-        content: '',
         tags: ''
     })
-    const { abstract, content, tags } = articleInfo
+    const { abstract, tags } = articleInfo
     // console.log("aticleInfo is: ", articleInfo)
 
     const handleChange = (event) => {
@@ -37,7 +41,7 @@ function Article(props) {
     const navigate = useNavigate()
     const saveArticle = async () => {
         try {
-            await saveArticle2Fb(userEmail, username, currentTitle, abstract, content, tags, newPicture)
+            await saveArticle2Fb(userEmail, username, currentTitle, abstract, mdContext, tags, newPicture)
             openNotificationWithIcon('success')
             navigate('/', {
                 state: userEmail
@@ -70,9 +74,21 @@ function Article(props) {
 
             <div className="Amain">
                 <p>Abstract</p>
-                <textarea id='article-abs' onChange={handleChange} value={articleInfo.abstract} name='abstract' placeholder='Enter a 1-paragraph abstract' style={{ maxHeight: 100 }} />
+                <TextArea
+                    id='article-abs'
+                    onChange={handleChange}
+                    value={articleInfo.abstract}
+                    name='abstract'
+                    placeholder='Enter a 1-paragraph abstract'
+                    autoSize={{
+                        minRows: 2,
+                        maxRows: 4,
+                    }} />
+                {/* <textarea id='article-abs' onChange={handleChange} value={articleInfo.abstract} name='abstract' placeholder='Enter a 1-paragraph abstract' style={{ maxHeight: 100 }} /> */}
                 <p>Article Text</p>
-                <textarea id='article-text' onChange={handleChange} value={articleInfo.content} name='content' placeholder='Enter a 1-paragraph abstract' style={{ minHeight: 100 }} />
+                <MarkDownIn />
+                <MarkDownRes />
+                {/* <textarea id='article-text' onChange={handleChange} value={articleInfo.content} name='content' placeholder='Enter a 1-paragraph abstract' style={{ minHeight: 100 }} /> */}
             </div>
 
             <div className="footer">

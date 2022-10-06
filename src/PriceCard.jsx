@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Button, Card } from 'antd'
 
 function PriceCard(props) {
@@ -21,12 +21,12 @@ function PriceCard(props) {
             <p style={{
                 fontSize: '21px'
             }}>{props.price}/monthly</p>
-            {rights.map((right, i) => 
+            {rights.map((right, i) =>
                 <p key={i}
-                style={{
-                    fontSize: '18px',
-                    fontStyle: 'italic'
-                }}
+                    style={{
+                        fontSize: '18px',
+                        fontStyle: 'italic'
+                    }}
                 >{right}</p>
             )}
             {props.title === 'Free'

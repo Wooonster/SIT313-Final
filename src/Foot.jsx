@@ -3,10 +3,14 @@ import { Layout, Row, Col } from 'antd'
 import { Link } from 'react-router-dom'
 import { LinkedinOutlined, GithubOutlined, FacebookOutlined } from '@ant-design/icons'
 import './css/Foot.css'
+import { auth } from './utils/firebase'
 
 const { Footer } = Layout
 
 function Foot() {
+  const curUser = auth.curUser
+  console.log(curUser)
+
   return (
     <Layout>
       <Footer className='foot'>
@@ -15,7 +19,6 @@ function Foot() {
             <p>Explore</p>
             <Link to='/post'>Post your idea/problem</Link> <br />
             <Link to='/plan'>Be a PRO</Link> <br />
-            <Link to='/settings'>To my place</Link>
           </Col>
           <Col className='links'>
             <p>Stay Connect</p>

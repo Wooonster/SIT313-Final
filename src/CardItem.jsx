@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Card, Button, Modal } from 'antd'
+import { Card, Button, Modal, Popover } from 'antd'
 import { CloseOutlined } from '@ant-design/icons';
 import Draggable from 'react-draggable';
 import "antd/dist/antd.min.css";
@@ -35,45 +35,53 @@ function CardItem(props) {
 
     }
 
+    const content = (
+        <div>
+            <p>Double Click to see more!</p>
+        </div>
+    )
+
     return (
         <Draggable>
-            <Card
-                id={`card${props.id}`}
-                title={props.title}
-                extra={
-                    <p style={{ display: 'flex' }}>
-                        <Button type="text" style={{ color: 'dodgerblue' }} onClick={() => setModalOpen(true)}>
-                            More
-                        </Button>
-                        <Modal
-                            title={props.title}
-                            centered
-                            open={modalOpen}
-                            onOk={() => setModalOpen(false)}
-                            onCancel={() => setModalOpen(false)}
-                        >
-                            <h3>{props.content}</h3>
-                            <p>Post Time: <span style={{ color: "deepskyblue" }}>{props.date}</span></p>
-                            <p>From: <span style={{ color: "deepskyblue" }}>{props.username}</span></p>
-                        </Modal>
-                        <CloseOutlined style={{ marginTop: '8px' }} onClick={handleClick} />
-                    </p>
-                }
-                hoverable
-                className={props.class}
-                onDoubleClick={click2Detail}
-            >
-                <div style={{
-                    display: '-webkit-box',
-                    WebkitBoxOrient: 'vertical',
-                    WebkitLineClamp: '2',
-                    overflow: 'hidden'
-                }}>
-                    <ReactMarkdown children={props.show === 'question' ? props.content : props.abstract} />
-                </div>
-                <p>{props.tags}</p>
-                <p>{props.date}</p>
-            </Card>
+            <Popover content={content} trigger='hover' placement='right'>
+                <Card
+                    id={`card${props.id}`}
+                    title={props.title}
+                    extra={
+                        <p style={{ display: 'flex' }}>
+                            <Button type="text" style={{ color: 'dodgerblue' }} onClick={() => setModalOpen(true)}>
+                                More
+                            </Button>
+                            <Modal
+                                title={props.title}
+                                centered
+                                open={modalOpen}
+                                onOk={() => setModalOpen(false)}
+                                onCancel={() => setModalOpen(false)}
+                            >
+                                <h3>{props.content}</h3>
+                                <p>Post Time: <span style={{ color: "deepskyblue" }}>{props.date}</span></p>
+                                <p>From: <span style={{ color: "deepskyblue" }}>{props.username}</span></p>
+                            </Modal>
+                            <CloseOutlined style={{ marginTop: '8px' }} onClick={handleClick} />
+                        </p>
+                    }
+                    hoverable
+                    className={props.class}
+                    onDoubleClick={click2Detail}
+                >
+                    <div style={{
+                        display: '-webkit-box',
+                        WebkitBoxOrient: 'vertical',
+                        WebkitLineClamp: '2',
+                        overflow: 'hidden'
+                    }}>
+                        <ReactMarkdown children={props.show === 'question' ? props.content : props.abstract} />
+                    </div>
+                    <p>{props.tags}</p>
+                    <p>{props.date}</p>
+                </Card>
+            </Popover>
         </Draggable>
     )
 }
