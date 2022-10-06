@@ -1,70 +1,110 @@
-# Getting Started with Create React App
+# SIT313 Task6.1 HD Final Task
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Introduction
+
+This project was created by Fangzhou Wang for the final task of course SIT313 and is, therfore, private to everyone except my teachers.
+
+This project is made using `React.js` and `Node.js` with `HTML/CSS`. This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
 
 In the project directory, you can run:
 
+### `npm init`
+
+After clone from the Github, use `npm init` to initialize the project and therefore can start the project.
+
 ### `npm start`
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+Runs the app in the development mode. Open [http://localhost:3000](http://localhost:3000) to view it in your browser. The page will reload when you make changes. You may also see any lint errors in the console.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### `npm list`
 
-### `npm test`
+Use this to check out the dependencies:
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+```tree
+dev@0.1.0 
+├── @stripe/react-stripe-js@1.12.0
+├── @stripe/stripe-js@1.38.1
+├── @testing-library/jest-dom@5.16.5
+├── @testing-library/react@13.3.0
+├── @testing-library/user-event@13.5.0
+├── antd@4.23.0
+├── concurrently@7.4.0
+├── firebase@9.9.3
+├── react-dom@18.2.0
+├── react-draggable@4.4.5
+├── react-icons@4.4.0
+├── react-markdown@8.0.3
+├── react-router-dom@6.3.0
+├── react-scripts@5.0.1
+├── react@18.2.0
+├── remark-gfm@3.0.1
+└── web-vitals@2.1.4
+```
 
-### `npm run build`
+## Folder Structure
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Project Structure
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+```tree
+dev
+├─node_modules
+├─public
+├─SendMail
+    │
+    │  package-lock.json
+    │  package.json
+    │  server.js
+    │  
+    └─node_modules
+└─src
+    │  App.js
+    │  Article.jsx
+    │  CardItem.jsx
+    │  CommentItem.jsx
+    │  Detail.jsx
+    │  Foot.jsx
+    │  Forget.jsx
+    │  Head.jsx
+    │  Homepage.jsx
+    │  index.js
+    │  Login.jsx
+    │  MyCardList.jsx
+    │  Plan.jsx
+    │  Post.jsx
+    │  PostHead.jsx
+    │  PriceCard.jsx
+    │  Question.jsx
+    │  Settings.jsx
+    │  Signup.jsx
+    │  Type.jsx
+    │  
+    ├─Context
+    │      editor.context.jsx
+    │      search.context.jsx
+    │      title.context.jsx
+    │      uploadpicture.context.jsx
+    │      
+    ├─css
+    │      App.css
+    │      Article.css
+    │      Auth.css
+    │      Detail.css
+    │      Foot.css
+    │      Head.css
+    │      Homepage.css
+    │      index.css
+    │      Plan.css
+    │      PostHead.css
+    │      Question.css
+    │      Settings.css
+    │      
+    ├─images
+    │      deakin-logo.jpg
+    │      
+    └─utils
+            firebase.js
+            MarkDownIn.jsx
+            MarkDownRes.jsx
+```

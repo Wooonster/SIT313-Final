@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useContext } from 'react'
 import { Input } from 'antd'
 import { MarkdownContext } from '../Context/editor.context'
 
@@ -6,15 +6,6 @@ const { TextArea } = Input;
 
 function MarkDownIn() {
     const { mdContext, setMdContext } = useContext(MarkdownContext)
-
-    // const handleChange = (e) => {
-    //     e.preventDefault()
-    //     setMdContext(e.target.value)
-    // }
-
-    // useEffect(() => {
-    //     handleChange()
-    // }, [])
 
     return (
         <div>
