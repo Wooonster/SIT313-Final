@@ -235,9 +235,6 @@ function Settings() {
                                 ids.push([i[0], i[1].title, d.comment, d.createTime])
                                 setNotifiCount(a)
                                 setNotifications(ids)
-                                // const updates = {}
-                                // updates[`post-comments/${i[0]}/` + ]
-                                // return update(ref(getDatabase()), updates)
                             }
                         })
                     }

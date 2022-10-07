@@ -170,7 +170,7 @@ function Homepage() {
                 </div>
             </Carousel>
 
-            <p className="welcome">Welcome to Job Finder, DEV@DEAKIN!</p>
+            <p className="welcome">Welcome to Ask and Post, DEV@DEAKIN!</p>
 
             <Tabs centered items={items} />
 
