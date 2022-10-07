@@ -3,13 +3,10 @@ import { Layout, Row, Col } from 'antd'
 import { Link } from 'react-router-dom'
 import { LinkedinOutlined, GithubOutlined, FacebookOutlined } from '@ant-design/icons'
 import './css/Foot.css'
-import { auth } from './utils/firebase'
 
 const { Footer } = Layout
 
 function Foot() {
-  const curUser = auth.curUser
-  console.log(curUser)
 
   return (
     <Layout>

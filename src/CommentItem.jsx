@@ -1,22 +1,29 @@
 import { Button, Input } from 'antd'
 import React, { useEffect, useState } from 'react'
-import { getUserComments } from './utils/firebase'
-import { LikeOutlined, LikeFilled, DislikeOutlined } from '@ant-design/icons'
+import { getDatabase, ref, onValue} from "firebase/database";
+// import { LikeOutlined, LikeFilled, DislikeOutlined } from '@ant-design/icons'
 import './css/Detail.css'
 
 const { TextArea } = Input;
 
 function CommentItem(props) {
+    const id = props.id
+    // get comments from real-time db
     const [comments, setComments] = useState([])
     useEffect(() => {
-        getUserComments().then(res => {
-            setComments(res)
+        const db = getDatabase()
+        onValue(ref(db, `post-comments/${id}/`), snapshot => {
+            const data = snapshot.val()
+            if (data !== null) {
+                // comments.push(data)
+                // console.log(Object.keys(data), Object.values(data))
+                setComments(Object.values(data))
+            } else {
+                console.log('no data')
+            }
         })
     }, [])
-
-    const filteredComment = comments.filter((comment) =>
-        comment[1].questionId === props.id
-    )
+    // console.log(comments)
 
     const [isliked, setIsLiked] = useState(false)
     const likeClick = () => {
@@ -29,19 +36,17 @@ function CommentItem(props) {
     const [showReply, setShowReply] = useState(false)
     const isBtnDisabled = reply.length === 0
 
-    const submitReply = () => {
-
-    }
-
     return (
         <div className='comment-area'>
             {
-                filteredComment.map((comment, i) => (
-                    <div key={i}>
+                comments.map((comment, i) => (
+                    <div key={i} style={{
+                        width: '100%'
+                    }}>
                         <div className='comment'>
-                            <p className='comment-author'>{comment[1].username}</p>
-                            <p className='comment-content'>{comment[1].comment}</p>
-                            <span className='comment-time'>{comment[1].createTime}</span>
+                            <p className='comment-author'>{comment.username}</p>
+                            <p className='comment-content'>{comment.comment}</p>
+                            <span className='comment-time'>{comment.createTime}</span>
                             {/* <Button type='link' icon={isliked ? <LikeFilled /> : <LikeOutlined />} value={isliked} onClick={this.likeClick} >Like</Button> */}
                             {/* <Button type='link' icon={<DislikeOutlined />} >Dislike</Button> */}
                             {/* <Button type='link' onClick={() => {
@@ -60,7 +65,7 @@ function CommentItem(props) {
                                     maxRows: 5,
                                 }}
                             />
-                            <Button type='primary' className='leave-btn' onClick={submitReply} disabled={isBtnDisabled} >reply</Button>
+                            <Button type='primary' className='leave-btn' disabled={isBtnDisabled} >reply</Button>
                         </div>
                     </div>
                 ))

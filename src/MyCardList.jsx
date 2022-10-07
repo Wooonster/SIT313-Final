@@ -19,7 +19,7 @@ function MyCardList(props) {
     const filteredQuestion = questionList.filter((question) => question[1].email === props.email)
     const filteredArticle = articleList.filter((article)=>article[1].email === props.email)
 
-    console.log('filtered', filteredArticle, ', ', filteredQuestion)
+    // console.log('filtered', filteredArticle, ', ', filteredQuestion)
 
     return (
         <div className='mycard-list'>

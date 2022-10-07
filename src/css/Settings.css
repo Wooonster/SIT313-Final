@@ -31,6 +31,21 @@
     text-align: center;
 }
 
+.notification  {
+    min-width: 250px;
+    border-bottom: 2px solid steelblue;
+}
+
+.notification #post {
+    font-size: 16px;
+}
+
+.notification #comment {
+    font-size: 14px;
+    margin-top: 8px;
+    margin-bottom: 4px;
+}
+
 .dash #icon {
     margin: auto 20px auto 20px;
 }

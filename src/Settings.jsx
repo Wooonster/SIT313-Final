@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { LogoutOutlined, DashboardOutlined, MailOutlined, DoubleLeftOutlined } from '@ant-design/icons'
-import { Row, Col, Button, Input, Modal, Popover, Badge } from "antd";
+import { LogoutOutlined, DashboardOutlined, MailOutlined, DoubleLeftOutlined, CloseOutlined } from '@ant-design/icons'
+import { Row, Col, Button, Input, Modal, Popover, Badge, Card } from "antd";
 import './css/Settings.css'
-import { getUserNameByUserEmail, saveUserInfo, updateDisplayName, auth, readUserInfoByEmail } from "./utils/firebase";
-import { useNavigate } from "react-router-dom";
+import { getUserNameByUserEmail, saveUserInfo, updateDisplayName, auth, readUserInfoByEmail, readAllAriticles, readAllQuestions, getAllIds, changeReadCondition } from "./utils/firebase";
+import { Link, useNavigate } from "react-router-dom";
 import "antd/dist/antd.min.css";
 import MyCardList from "./MyCardList";
+import { getDatabase, ref, onValue, get, update } from "firebase/database";
 import Foot from "./Foot";
 
 function Settings() {
@@ -14,7 +15,7 @@ function Settings() {
     let currentUserEmail = ''
     // let currentUserDisplayName = ''
     if (user !== null) {
-        console.log('current user', user)
+        // console.log('current user', user)
         currentUserEmail = user.email
     }
 
@@ -82,7 +83,7 @@ function Settings() {
         postcode: ''
     })
     const { firstName, familyName, phone, addressLine1, addressLine2, addressLine3, postcode } = info
-    console.log('user info setted: ', info)
+    // console.log('user info setted: ', info)
 
     // set new user info
     const handleChange = (event) => {
@@ -186,11 +187,65 @@ function Settings() {
                 }}>Sign out here</Button>
         </div>
     )
+
+    // notification count && notification box 
+    const [notifiCount, setNotifiCount] = useState(0)
+    const [notifications, setNotifications] = useState([])
+
     const mailboxContent = (
-        <div>
-            <Button type="primary">Check</Button>
+        <div className="mailbox">
+            {notifications.map((comment, i) => (
+                <Card size="small" title="Comment" extra={<p>{comment[3]}</p>} key={i} id={`notification${i}`} className='notification' >
+                    <Link to='/detail' state={{ id: comment[0] }} id="post">{comment[1]}</Link>
+                    <p id="comment">{comment[2]}</p>
+                </Card>
+            ))}
         </div>
     )
+
+    useEffect(() => {
+        var a = 0
+        var ids = []
+        readAllQuestions().then(res => {
+            res.forEach(i => {
+                onValue(ref(getDatabase(), `post-comments/${i[0]}/`), snapshot => {
+                    if (snapshot.exists()) {
+                        const data = Object.values(snapshot.val())
+                        data.forEach(d => {
+                            if (d.email === currentUserEmail && !d.isRead) {
+                                a = a + 1
+                                ids.push([i[0], i[1].title, d.comment, d.createTime])
+                                setNotifiCount(a)
+                                setNotifications(ids)
+                            }
+                        })
+                    }
+                })
+            })
+        })
+
+        readAllAriticles().then(res => {
+            res.forEach(i => {
+                onValue(ref(getDatabase(), `post-comments/${i[0]}/`), snapshot => {
+                    if (snapshot.exists()) {
+                        const data = Object.values(snapshot.val())
+                        data.forEach(d => {
+                            if (d.email === currentUserEmail && !d.isRead) {
+                                a = a + 1
+                                ids.push([i[0], i[1].title, d.comment, d.createTime])
+                                setNotifiCount(a)
+                                setNotifications(ids)
+                                // const updates = {}
+                                // updates[`post-comments/${i[0]}/` + ]
+                                // return update(ref(getDatabase()), updates)
+                            }
+                        })
+                    }
+                })
+            })
+        })
+    }, [])
+
 
     return (
         <div className="settings">
@@ -210,9 +265,12 @@ function Settings() {
                 </Col>
                 <Col span={11}></Col>
                 <Col span={3} className='dash'>
-                    <Badge count={5} offset={[-20, 5]}>
-                        <Popover placement="bottom" content={mailboxContent} trigger='click'>
-                            <MailOutlined id="icon" />
+                    <Badge count={notifiCount} offset={[-20, 5]}>
+                        <Popover placement="rightBottom" content={mailboxContent} trigger='click'>
+                            <MailOutlined id="icon" onClick={() => {
+                                setNotifiCount(0)
+                                changeReadCondition()
+                            }} />
                         </Popover>
                     </Badge>
                     <Popover placement="bottom" content={content} trigger="click">

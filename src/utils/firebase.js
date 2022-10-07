@@ -5,6 +5,7 @@ import { initializeApp } from "firebase/app";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, sendPasswordResetEmail } from "firebase/auth";
 import { getFirestore, doc, getDoc, getDocs, setDoc, updateDoc, collection, addDoc } from 'firebase/firestore'
 import { ref, getStorage, uploadBytes } from 'firebase/storage'
+import { getDatabase, set, ref as dbRef, get, child, onValue, update } from 'firebase/database'
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -13,7 +14,8 @@ const firebaseConfig = {
   projectId: "dev-auth-e0483",
   storageBucket: "dev-auth-e0483.appspot.com",
   messagingSenderId: "138411002096",
-  appId: "1:138411002096:web:a31491359174c6a84f9a35"
+  appId: "1:138411002096:web:a31491359174c6a84f9a35",
+  databaseURL: 'https://dev-auth-e0483-default-rtdb.firebaseio.com/'
 };
 
 // Initialize Firebase
@@ -21,7 +23,10 @@ const fbApp = initializeApp(firebaseConfig);
 
 export const auth = getAuth()
 export const db = getFirestore(fbApp)
+// Initialize Firebase Storage
 export const storage = getStorage(fbApp)
+// Initialize Realtime Database and get a reference to the service
+const database = getDatabase(fbApp);
 
 // setup Database Document
 export const createUserDocFromAuth = async (userAuth, additionalInfomation = {}) => {
@@ -246,7 +251,7 @@ export const getQuestionById = async (id) => {
   try {
     const docSnap = await getDoc(docRef)
     if (docSnap.exists()) {
-      console.log(`question ${id} is: `, docSnap.data())
+      // console.log(`question ${id} is: `, docSnap.data())
       return docSnap.data()
     } else {
       // doc.data() will be undefined in this case
@@ -262,7 +267,7 @@ export const getArticleById = async (id) => {
   const docRef = doc(db, 'articles', id)
   try {
     const docSnap = await getDoc(docRef)
-    if(docSnap.exists()) {
+    if (docSnap.exists()) {
       return docSnap.data()
     } else {
       console.log("No such document!");
@@ -272,32 +277,55 @@ export const getArticleById = async (id) => {
   }
 }
 
-export const addUserComment = async (email, username, comment, questionId) => {
-  const commentDocRef = collection(db, 'comments')
-  const createTime = new Date().toLocaleString()
-  try {
-    await addDoc(commentDocRef, {
-      email,
-      username,
-      createTime,
-      comment,
-      questionId
-    })
-  } catch (error) {
-    console.log('fail store comment', error.message)
+// write to real-time database
+export function randomString(length) {
+  let characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  let str = "";
+  for (let i = 0; i < length; i++) {
+    let index = Math.floor(Math.random() * characters.length);
+    str += characters[index];
   }
+  return str;
 }
 
-export const getUserComments = async () => {
-  const commentDocRef = collection(db, 'comments')
-  let allComments = []
-  try {
-    const querySnap = await getDocs(commentDocRef)
-    querySnap.forEach((doc) => {
-      allComments.push([doc.id, doc.data()])
-    })
-  } catch (error) {
-    console.log('get all comments failed', error.message)
+export const writeComment2RealTimeDB = (email, username, comment, id) => {
+  const createTime = new Date().toLocaleString()
+  let count = randomString(6)
+  let isRead = false
+  const db = getDatabase()
+  set(dbRef(db, `post-comments/${id}/` + count), {
+    email,
+    username,
+    createTime,
+    comment,
+    id,
+    isRead
+  })
+}
+
+export const changeReadCondition = () => {
+  const db = getDatabase()
+  let postIds = []
+  let commentIds = []
+  let comments
+  onValue(dbRef(db, 'post-comments/'), snapshot => {
+    if (snapshot.exists()) {
+      postIds = Object.keys(snapshot.val())
+      comments = Object.values(snapshot.val())
+    } else {
+      console.log('no data')
+    }
+  })
+
+  console.log(postIds, comments)
+
+  for (var i = 0; i < postIds.length; i++) {
+    commentIds.push(Object.keys(comments[i]))
+    // console.log(commentIds)
+    for (var j = 0; j < commentIds[i].length; j++) {
+      update(dbRef(db, `post-comments/${postIds[i]}/${commentIds[i][j]}`), {
+        isRead: true
+      })
+    }
   }
-  return allComments
 }

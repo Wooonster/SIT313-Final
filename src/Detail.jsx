@@ -2,14 +2,13 @@ import { Row, Col, Input, Button, Skeleton, notification } from 'antd'
 import { DoubleLeftOutlined } from '@ant-design/icons'
 import React, { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { addUserComment, auth, getArticleById, getQuestionById, getUserNameByUserEmail } from './utils/firebase'
+import { auth, getArticleById, getQuestionById, getUserNameByUserEmail, writeComment2RealTimeDB } from './utils/firebase'
 import CommentItem from './CommentItem'
 import './css/Detail.css'
 import Head from './Head'
 import Foot from './Foot'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
-
 
 const { TextArea } = Input;
 
@@ -72,7 +71,7 @@ function Detail() {
       curUserName = await getUserNameByUserEmail(curUserEmail)
     }
     try {
-      await addUserComment(curUserEmail, curUserName, comment, id)
+      writeComment2RealTimeDB(curUserEmail, curUserName, comment, id)
       openNotificationWithIcon('success')
       setComment('')
     } catch (error) {
@@ -148,7 +147,6 @@ function Detail() {
               <Button type='primary' className='leave-btn' onClick={handleComment} disabled={isBtnDisabled} >comment</Button>
             </Row>
             <Row>
-
               <CommentItem id={id} />
             </Row>
           </Col>
