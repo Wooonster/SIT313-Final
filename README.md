@@ -10,9 +10,9 @@ This project is made using `React.js` and `Node.js` with `HTML/CSS`. This projec
 
 In the project directory, you can run:
 
-### `npm init`
+### `npm install npm`
 
-After clone from the Github, use `npm init` to initialize the project and therefore can start the project.
+After clone from the Github, use `npm install npm` to initialize the project and therefore can start the project.
 
 ### `npm start`
 
