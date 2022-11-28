@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This project was created by Fangzhou Wang for the final task of course SIT313 and is, therfore, private to everyone except my teachers.
+This project was created by Wonster Wang for the final task of course SIT313 and is, therfore, private to everyone except my teachers.
 
 This project is made using `React.js` and `Node.js` with `HTML/CSS`. This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
